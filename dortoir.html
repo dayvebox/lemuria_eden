@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Accès Dortoir - 55 Investigations</title>
+    <title>Accès Dortoir - BIOS-Shell V2</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
@@ -11,7 +11,8 @@
             --accent-color: #00d4ff;
             --text-primary: #ffffff;
             --border-color: #2d3748;
-            --btn-active: #00d4ff;
+            --scute-idle: #2d3748;
+            --scute-active: #00d4ff;
         }
 
         body {
@@ -45,93 +46,78 @@
         }
 
         .main-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 50px;
             margin-top: 50px;
-            width: 90%;
-            max-width: 1000px;
-        }
-
-        /* --- DIGICODE --- */
-        .keypad-section {
             text-align: center;
-            background: var(--panel-color);
-            padding: 30px;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
+            width: 100%;
+            max-width: 600px;
         }
 
-        .grid-3x3 {
-            display: grid;
-            grid-template-columns: repeat(3, 80px);
-            grid-template-rows: repeat(3, 80px);
-            gap: 15px;
-            margin-bottom: 30px;
-        }
-
-        .key-btn {
-            width: 80px;
-            height: 80px;
-            background: #2d3748;
-            border: 2px solid #4a5568;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .key-btn.active {
-            background: var(--accent-color);
-            border-color: #fff;
-            box-shadow: 0 0 15px rgba(0, 212, 255, 0.5);
-        }
-
-        /* --- RÉFÉRENCE CARAPACE --- */
-        .reference-section {
-            text-align: center;
-        }
-
-        .shell-container {
-            position: relative;
-            width: 280px;
-            height: 280px;
-            background: var(--panel-color);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
+        /* --- LE DIGICODE TORTUE --- */
+        .shell-keypad {
             display: flex;
-            align-items: center;
             justify-content: center;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 40px;
+            background: radial-gradient(circle, #1a1c23 0%, #0b0c10 100%);
+            border-radius: 50% 50% 40% 40%; /* Forme de carapace */
+            border: 2px solid var(--border-color);
+            box-shadow: 0 0 30px rgba(0,0,0,0.5);
         }
 
-        .shell-img {
-            width: 200px;
-            opacity: 0.7;
+        .column {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
 
-        .grid-overlay {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            grid-template-rows: repeat(3, 1fr);
-            border: 1px solid rgba(255,255,255,0.1);
+        /* Surélévation de la colonne centrale */
+        .column-center {
+            margin-top: -30px;
         }
 
-        .grid-overlay div {
-            border: 1px dashed rgba(0, 212, 255, 0.2);
+        /* Style des écailles (Hexagones) */
+        .scute {
+            width: 80px;
+            height: 90px;
+            background-color: var(--scute-idle);
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            color: rgba(255,255,255,0.1);
+            font-weight: bold;
+        }
+
+        .scute:hover {
+            background-color: #3d495d;
+            transform: scale(1.05);
+        }
+
+        .scute.active {
+            background-color: var(--accent-color);
+            box-shadow: 0 0 20px var(--accent-color);
+            color: #000;
+        }
+
+        /* --- CONTRÔLES --- */
+        .controls {
+            margin-top: 40px;
         }
 
         .btn-validate {
-            width: 100%;
-            padding: 15px;
+            padding: 12px 40px;
             background: transparent;
             border: 2px solid var(--accent-color);
             color: var(--accent-color);
-            font-weight: bold;
-            cursor: pointer;
             text-transform: uppercase;
             letter-spacing: 2px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
         }
 
         .btn-validate:hover {
@@ -139,90 +125,102 @@
             color: #000;
         }
 
-        #result-msg {
+        #status-msg {
             margin-top: 20px;
+            font-size: 0.9rem;
+            min-height: 20px;
+        }
+
+        #success-panel {
             display: none;
-            color: #48bb78;
-            font-weight: bold;
-            padding: 15px;
+            background: rgba(72, 187, 120, 0.2);
             border: 1px solid #48bb78;
-            background: rgba(72, 187, 120, 0.1);
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            color: #48bb78;
         }
     </style>
 </head>
 <body>
 
-<header>
-    <a href="index.html" class="home-btn"><i class="fas fa-home"></i></a>
-    <div style="font-weight: 800; letter-spacing: 2px;">DORTOIR DU PERSONNEL</div>
-</header>
+    <header>
+        <a href="index.html" class="home-btn"><i class="fas fa-home"></i></a>
+        <div style="font-weight: 800; letter-spacing: 2px;">SYSTÈME D'ACCÈS DORTOIR</div>
+    </header>
 
-<div class="main-container">
-    
-    <div class="keypad-section">
-        <h3 style="margin-top:0; font-size: 0.9rem; color: var(--accent-color);">DIGICODE SÉCURISÉ</h3>
-        <div class="grid-3x3" id="keypad">
-            <button class="key-btn" onclick="toggleKey(0)"></button>
-            <button class="key-btn" onclick="toggleKey(1)"></button>
-            <button class="key-btn" onclick="toggleKey(2)"></button>
-            <button class="key-btn" onclick="toggleKey(3)"></button>
-            <button class="key-btn" onclick="toggleKey(4)"></button>
-            <button class="key-btn" onclick="toggleKey(5)"></button>
-            <button class="key-btn" onclick="toggleKey(6)"></button>
-            <button class="key-btn" onclick="toggleKey(7)"></button>
-            <button class="key-btn" onclick="toggleKey(8)"></button>
-        </div>
-        <button class="btn-validate" onclick="validate()">Valider</button>
-        <div id="result-msg">
-            ACCÈS AUTORISÉ.<br>Vous pouvez ouvrir l'enveloppe B - Dortoir du personnel.
-        </div>
-    </div>
+    <div class="main-container">
+        <h2 style="font-size: 0.8rem; color: var(--accent-color); letter-spacing: 3px;">SÉQUENCE BIOMÉTRIQUE REQUISE</h2>
+        
+        <div class="shell-keypad">
+            <div class="column">
+                <button class="scute" id="L1" onclick="press('L1')"></button>
+                <button class="scute" id="L2" onclick="press('L2')"></button>
+                <button class="scute" id="L3" onclick="press('L3')"></button>
+                <button class="scute" id="L4" onclick="press('L4')"></button>
+            </div>
 
-    <div class="reference-section">
-        <h3 style="margin-top:0; font-size: 0.9rem; color: #666;">RÉFÉRENCE SYSTÈME</h3>
-        <div class="shell-container">
-            <img src="image_98b2d3.png" class="shell-img" alt="Schéma carapace">
-            <div class="grid-overlay">
-                <div></div><div></div><div></div>
-                <div></div><div></div><div></div>
-                <div></div><div></div><div></div>
+            <div class="column column-center">
+                <button class="scute" id="C1" onclick="press('C1')"></button>
+                <button class="scute" id="C2" onclick="press('C2')"></button>
+                <button class="scute" id="C3" onclick="press('C3')"></button>
+                <button class="scute" id="C4" onclick="press('C4')"></button>
+                <button class="scute" id="C5" onclick="press('C5')"></button>
+            </div>
+
+            <div class="column">
+                <button class="scute" id="R1" onclick="press('R1')"></button>
+                <button class="scute" id="R2" onclick="press('R2')"></button>
+                <button class="scute" id="R3" onclick="press('R3')"></button>
+                <button class="scute" id="R4" onclick="press('R4')"></button>
             </div>
         </div>
-        <p style="font-size: 0.7rem; color: #444; margin-top: 10px;">Corrélation biométrique requise</p>
+
+        <div class="controls">
+            <div id="status-msg">Séquence : <span id="seq-display">---</span></div>
+            <button class="btn-validate" onclick="validate()">Valider l'accès</button>
+            <button class="btn-validate" style="border-color: #666; color: #666; margin-left: 10px;" onclick="reset()">Réinitialiser</button>
+            
+            <div id="success-panel">
+                <i class="fas fa-unlock-alt"></i> ACCÈS DORTOIR DÉVERROUILLÉ<br>
+                Vous pouvez maintenant ouvrir l'enveloppe : <b>Dortoir du Personnel</b>.
+            </div>
+        </div>
     </div>
 
-</div>
+    <script>
+        let currentSequence = [];
+        // SOLUTION : Haut-Milieu, Centre, Bas-Milieu (C1, C3, C5)
+        const solution = ["C1", "C3", "C5"];
 
-<script>
-    let activeKeys = [false, false, false, false, false, false, false, false, false];
-    
-    // SOLUTION : Colonne centrale (indices 1, 4, 7) basée sur la "colonne vertébrale" de la carapace
-    const solution = [1, 4, 7];
+        function press(id) {
+            if (currentSequence.includes(id)) return;
+            if (currentSequence.length >= 3) return;
 
-    function toggleKey(index) {
-        activeKeys[index] = !activeKeys[index];
-        const buttons = document.querySelectorAll('.key-btn');
-        buttons[index].classList.toggle('active');
-        document.getElementById('result-msg').style.display = "none";
-    }
-
-    function validate() {
-        const currentlyActive = activeKeys
-            .map((val, idx) => val ? idx : null)
-            .filter(val => val !== null);
-        
-        // Vérification si les longueurs correspondent et si chaque index de la solution est présent
-        const isCorrect = currentlyActive.length === solution.length && 
-                          solution.every(val => currentlyActive.includes(val));
-
-        if (isCorrect) {
-            document.getElementById('result-msg').style.display = "block";
-        } else {
-            alert("Accès refusé. Schéma incorrect.");
-            // Reset optionnel pour la difficulté
+            currentSequence.push(id);
+            document.getElementById(id).classList.add('active');
+            document.getElementById('seq-display').innerText = currentSequence.join(' - ');
         }
-    }
-</script>
 
+        function reset() {
+            currentSequence.forEach(id => {
+                document.getElementById(id).classList.remove('active');
+            });
+            currentSequence = [];
+            document.getElementById('seq-display').innerText = "---";
+            document.getElementById('status-msg').style.color = "inherit";
+        }
+
+        function validate() {
+            if (JSON.stringify(currentSequence) === JSON.stringify(solution)) {
+                document.getElementById('success-panel').style.display = 'block';
+                document.getElementById('status-msg').style.display = 'none';
+            } else {
+                document.getElementById('status-msg').innerText = "ERREUR DE SÉQUENCE - ACCÈS REFUSÉ";
+                document.getElementById('status-msg').style.color = "#ff3e3e";
+                setTimeout(reset, 1000);
+            }
+        }
+    </script>
 </body>
 </html>
