@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>INTERPOL - Global Criminal Database</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --interpol-blue: #003366;
+            --interpol-dark: #001a33;
+            --bg-light: #f4f7f9;
+            --text-dark: #2c3e50;
+            --accent-red: #c0392b;
+            --border: #d5dbdb;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        header {
+            width: 100%;
+            background-color: var(--interpol-blue);
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            border-bottom: 4px solid var(--interpol-dark);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .container {
+            width: 90%;
+            max-width: 800px;
+            margin-top: 50px;
+            background: white;
+            padding: 40px;
+            border-radius: 2px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .logo-area {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo-area i {
+            font-size: 3rem;
+            color: var(--interpol-blue);
+        }
+
+        h1 {
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-top: 10px;
+            color: var(--interpol-blue);
+        }
+
+        /* --- SEARCH AREA --- */
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 15px;
+            border: 1px solid var(--border);
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--interpol-blue);
+        }
+
+        .btn-search {
+            background-color: var(--interpol-blue);
+            color: white;
+            border: none;
+            padding: 0 25px;
+            cursor: pointer;
+            font-weight: bold;
+            text-transform: uppercase;
+            transition: background 0.3s;
+        }
+
+        .btn-search:hover {
+            background-color: var(--interpol-dark);
+        }
+
+        /* --- RESULTS --- */
+        #result-area {
+            margin-top: 20px;
+            min-height: 100px;
+            border-top: 2px solid var(--bg-light);
+            padding-top: 20px;
+        }
+
+        .no-result {
+            color: #7f8c8d;
+            font-style: italic;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .criminal-record {
+            border-left: 5px solid var(--accent-red);
+            padding: 20px;
+            background: #fff;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .record-header {
+            color: var(--accent-red);
+            font-weight: bold;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        .record-body p {
+            margin: 8px 0;
+            line-height: 1.5;
+        }
+
+        .label {
+            font-weight: bold;
+            color: #34495e;
+            width: 150px;
+            display: inline-block;
+        }
+
+        .warning-banner {
+            background-color: var(--accent-red);
+            color: white;
+            padding: 10px;
+            font-size: 0.8rem;
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        footer {
+            margin-top: auto;
+            padding: 20px;
+            font-size: 0.7rem;
+            color: #bdc3c7;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div style="font-weight: bold; letter-spacing: 1px;">INTERNATIONAL CRIMINAL POLICE ORGANIZATION</div>
+</header>
+
+<div class="container">
+    <div class="logo-area">
+        <i class="fas fa-globe-americas"></i>
+        <h1>Nominal Database Search</h1>
+    </div>
+
+    <div class="warning-banner" id="warning">
+        RESTRICTED ACCESS - PROCEED WITH CAUTION
+    </div>
+
+    <div class="search-box">
+        <input type="text" id="nameSearch" placeholder="Entrer un nom (ex: John Doe)..." onkeypress="handleEnter(event)">
+        <button class="btn-search" onclick="performSearch()">RECHERCHER</button>
+    </div>
+
+    <div id="result-area">
+        <div class="no-result">Veuillez entrer un nom pour interroger la base de données.</div>
+    </div>
+</div>
+
+<footer>
+    &copy; INTERPOL 2026 - Accès réservé aux agences de maintien de l'ordre autorisées (Protocol 44-B).
+</footer>
+
+<script>
+    function handleEnter(e) {
+        if (e.key === 'Enter') performSearch();
+    }
+
+    // Fonction pour normaliser le texte (minuscules, sans accents)
+    function normalize(str) {
+        return str.toLowerCase()
+                  .normalize("NFD")
+                  .replace(/[\u0300-\u036f]/g, "")
+                  .trim();
+    }
+
+    function performSearch() {
+        const query = normalize(document.getElementById('nameSearch').value);
+        const resultArea = document.getElementById('result-area');
+        const warning = document.getElementById('warning');
+        
+        if (!query) return;
+
+        // On cherche si "salome" ET "riviere" sont présents, peu importe l'ordre
+        const isSalome = query.includes("salome") && query.includes("riviere");
+
+        if (isSalome) {
+            warning.style.display = 'block';
+            resultArea.innerHTML = `
+                <div class="criminal-record">
+                    <div class="record-header">DOSSIER CRIMINEL : SALOMÉ RIVIÈRE</div>
+                    <div class="record-body">
+                        <p><span class="label">Date de naissance :</span> 26 mars 1981</p>
+                        <p><span class="label">Dernière activité :</span> Rapport police du 13/12/2018</p>
+                        <p><span class="label">Motif principal :</span> Exercice illégal de la médecine</p>
+                        <p><span class="label">Plaintes civiles :</span> 3 signalements pour abus de confiance</p>
+                        <p><span class="label">Note de sûreté :</span> Impliquée dans un système d'arnaque pyramidale à grande échelle (Type Ponzi). Profil fugitif potentiel.</p>
+                    </div>
+                </div>
+            `;
+        } else {
+            warning.style.display = 'none';
+            resultArea.innerHTML = `
+                <div class="no-result">
+                    <i class="fas fa-search-minus"></i> Aucun casier trouvé pour ce nom dans la base de données INTERPOL.
+                </div>
+            `;
+        }
+    }
+</script>
+
+</body>
+</html>
