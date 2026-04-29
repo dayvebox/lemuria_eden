@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>SPF - Portail d'Authentification</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --police-blue: #002366;
+            --police-light: #f4f7f9;
+            --accent: #d4af37;
+            --text: #333;
+        }
+
+        body {
+            background-color: #e0e4e8;
+            color: var(--text);
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        header {
+            width: 100%;
+            background-color: var(--police-blue);
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            border-bottom: 4px solid var(--accent);
+            position: relative;
+        }
+
+        .home-btn {
+            position: absolute;
+            left: 20px; top: 50%;
+            transform: translateY(-50%);
+            color: white;
+            font-size: 1.5rem;
+            text-decoration: none;
+        }
+
+        .container {
+            background: white;
+            width: 90%;
+            max-width: 500px;
+            margin-top: 50px;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        h2 { color: var(--police-blue); font-size: 1.2rem; margin-bottom: 25px; }
+
+        /* --- ÉTAPE 1 : DOSSIER --- */
+        #step-1 input {
+            width: 80%;
+            padding: 12px;
+            font-size: 1.1rem;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* --- ÉTAPE 2 : CAPTCHA --- */
+        #step-2 { display: none; }
+        
+        .captcha-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin: 20px 0;
+            background: #eee;
+            padding: 8px;
+        }
+
+        .captcha-item {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            background-size: cover;
+            background-position: center;
+            cursor: pointer;
+            border: 4px solid transparent;
+            transition: 0.2s;
+            position: relative;
+            background-color: #ccc; /* Fond gris en attendant l'image */
+        }
+
+        .captcha-item.selected {
+            border-color: #4285f4;
+        }
+
+        .captcha-item.selected::after {
+            content: "\f058";
+            font-family: "Font Awesome 5 Free";
+            font-weight: 900;
+            position: absolute;
+            top: 5px; left: 5px;
+            color: #4285f4;
+            background: white;
+            border-radius: 50%;
+        }
+
+        .btn {
+            background: var(--police-blue);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        #success-msg {
+            display: none;
+            color: #28a745;
+            font-weight: bold;
+            margin-top: 20px;
+            padding: 20px;
+            border: 2px dashed #28a745;
+            background: #f8fff9;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <a href="index.html" class="home-btn"><i class="fas fa-home"></i></a>
+    <div style="font-weight: bold; letter-spacing: 1px;">SEYCHELLES POLICE FORCE</div>
+    <div style="font-size: 0.7rem; opacity: 0.8;">ACCÈS SÉCURISÉ AUX ARCHIVES</div>
+</header>
+
+<div class="container">
+    
+    <div id="step-1">
+        <h2>Numéro de dossier requis</h2>
+        <input type="text" id="caseNumber" placeholder="Ex: DC8-7742">
+        <br>
+        <button class="btn" onclick="goToCaptcha()">VÉRIFIER</button>
+    </div>
+
+    <div id="step-2">
+        <div style="background: #4285f4; color: white; padding: 15px; text-align: left; margin-bottom: 15px;">
+            <div style="font-size: 0.8rem;">Vérification humaine</div>
+            <div style="font-weight: bold; font-size: 1rem;">Sélectionnez les 4 images appartenant à ce dossier.</div>
+        </div>
+
+        <div class="captcha-grid">
+            <div class="captcha-item" id="img1" style="background-image: url('captcha1.jpg')" onclick="toggleImg(1)"></div>
+            <div class="captcha-item" id="img2" style="background-image: url('captcha2.jpg')" onclick="toggleImg(2)"></div>
+            <div class="captcha-item" id="img3" style="background-image: url('captcha3.jpg')" onclick="toggleImg(3)"></div>
+            <div class="captcha-item" id="img4" style="background-image: url('captcha4.jpg')" onclick="toggleImg(4)"></div>
+            <div class="captcha-item" id="img5" style="background-image: url('captcha5.jpg')" onclick="toggleImg(5)"></div>
+            <div class="captcha-item" id="img6" style="background-image: url('captcha6.jpg')" onclick="toggleImg(6)"></div>
+            <div class="captcha-item" id="img7" style="background-image: url('captcha7.jpg')" onclick="toggleImg(7)"></div>
+            <div class="captcha-item" id="img8" style="background-image: url('captcha8.jpg')" onclick="toggleImg(8)"></div>
+            <div class="captcha-item" id="img9" style="background-image: url('captcha9.jpg')" onclick="toggleImg(9)"></div>
+        </div>
+
+        <button class="btn" onclick="validateCaptcha()">VALIDER</button>
+    </div>
+
+    <div id="success-msg">
+        <i class="fas fa-file-invoice" style="font-size: 2rem; margin-bottom: 10px;"></i><br>
+        ACCÈS AUTORISÉ.<br>
+        Vous pouvez ouvrir l'enveloppe C - Dossier de police.
+    </div>
+
+</div>
+
+<script>
+    const CORRECT_CASE = "3X594F";
+    const SOLUTION = [9, 7, 4, 3]; // Les numéros des 4 bonnes images
+    let selectedImages = [];
+
+    function goToCaptcha() {
+        const input = document.getElementById('caseNumber').value.trim().toUpperCase();
+        if (input === CORRECT_CASE) {
+            document.getElementById('step-1').style.display = 'none';
+            document.getElementById('step-2').style.display = 'block';
+        } else {
+            alert("Erreur : Dossier introuvable ou accès refusé.");
+        }
+    }
+
+    function toggleImg(id) {
+        const el = document.getElementById('img' + id);
+        if (selectedImages.includes(id)) {
+            selectedImages = selectedImages.filter(i => i !== id);
+            el.classList.remove('selected');
+        } else {
+            if (selectedImages.length < 4) {
+                selectedImages.push(id);
+                el.classList.add('selected');
+            }
+        }
+    }
+
+    function validateCaptcha() {
+        if (selectedImages.length !== 4) {
+            alert("Veuillez sélectionner exactement 4 images.");
+            return;
+        }
+
+        const isCorrect = selectedImages.every(img => SOLUTION.includes(img)) && 
+                          SOLUTION.every(img => selectedImages.includes(img));
+
+        if (isCorrect) {
+            document.getElementById('step-2').style.display = 'none';
+            document.getElementById('success-msg').style.display = 'block';
+        } else {
+            alert("Échec de la validation. Vérifiez les pièces à conviction.");
+            selectedImages = [];
+            document.querySelectorAll('.captcha-item').forEach(el => el.classList.remove('selected'));
+        }
+    }
+</script>
+
+</body>
+</html>
