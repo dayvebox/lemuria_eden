@@ -24,6 +24,7 @@
             align-items: center;
             min-height: 100vh;
             user-select: none;
+            padding-bottom: 50px;
         }
 
         header {
@@ -35,15 +36,28 @@
             letter-spacing: 2px;
             font-size: 0.8rem;
             color: var(--accent);
+            margin-bottom: 30px;
         }
 
-        .container { margin-top: 50px; text-align: center; }
+        .container { text-align: center; max-width: 500px; }
+
+        /* --- NOUVEAU : LA PHOTO --- */
+        .clue-photo {
+            width: 250px;
+            height: auto;
+            border: 8px solid #fff;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            margin-bottom: 30px;
+            transform: rotate(-2deg); /* Petit effet photo posée */
+            transition: transform 0.3s;
+        }
+        .clue-photo:hover { transform: rotate(0deg) scale(1.05); }
 
         /* --- LA ROUE --- */
         .safe-box {
             position: relative;
-            width: 350px;
-            height: 350px;
+            width: 320px;
+            height: 320px;
             margin: 0 auto;
             background: var(--panel);
             border-radius: 50%;
@@ -68,8 +82,8 @@
 
         #wheel {
             position: relative;
-            width: 280px;
-            height: 280px;
+            width: 260px;
+            height: 260px;
             border-radius: 50%;
             background: #020617;
             border: 2px solid var(--line);
@@ -83,30 +97,39 @@
             display: flex;
             justify-content: center;
             padding-top: 15px;
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             color: var(--accent);
         }
 
         /* --- CONTROLES --- */
         .controls {
-            margin-top: 40px;
+            margin-top: 30px;
             display: flex;
             justify-content: center;
-            gap: 50px;
+            gap: 40px;
         }
 
         .btn-nav {
             background: var(--panel);
             border: 1px solid var(--line);
             color: var(--text);
-            width: 65px; height: 65px;
+            width: 60px; height: 60px;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 1.5rem;
-            transition: background 0.2s;
+            font-size: 1.4rem;
         }
 
-        .btn-nav:hover { background: var(--line); }
+        /* --- NOUVEAU : INDICE TEXTUEL --- */
+        .clue-text {
+            margin-top: 20px;
+            font-size: 0.85rem;
+            color: var(--accent);
+            font-style: italic;
+            max-width: 300px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.4;
+        }
 
         .sequence-bar {
             margin-top: 30px;
@@ -116,34 +139,34 @@
         }
 
         .slot {
-            width: 45px; height: 45px;
+            width: 40px; height: 40px;
             border-bottom: 2px solid var(--line);
             display: flex; align-items: center; justify-content: center;
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             color: var(--text);
-            transition: all 0.3s;
         }
 
         #success-notif {
             display: none;
-            margin-top: 40px;
+            margin-top: 30px;
             color: var(--success);
             border: 1px solid var(--success);
             padding: 20px;
             background: rgba(16, 185, 129, 0.1);
-            max-width: 420px;
             animation: slideUp 0.5s ease-out;
         }
 
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
-    <header>UNITÉ DE STOCKAGE SÉCURISÉE - ARCHIVES E</header>
+    <header>CONTRÔLE D'ACCÈS - BUREAU DU DIRECTEUR</header>
 
     <div class="container">
         
+        <img src="assets/photo.jpg" class="clue-photo" alt="Indice visuel">
+
         <div class="safe-box">
             <div class="marker"></div>
             <div id="wheel"></div>
@@ -153,6 +176,10 @@
             <button class="btn-nav" onclick="rotate('left')">◀</button>
             <button class="btn-nav" onclick="rotate('right')">▶</button>
         </div>
+
+        <p class="clue-text">
+            Saisissez votre combinaison à 5 symboles en tournant la molette, en commençant vers la droite.
+        </p>
 
         <div class="sequence-bar">
             <div class="slot" id="s0"></div>
@@ -164,7 +191,7 @@
 
         <div id="success-notif">
             <b>MÉCANISME DÉBLOQUÉ</b><br>
-            La serrure électronique vient de céder.<br>
+            Le verrou magnétique vient de se désactiver.<br>
             Ouvrez l'enveloppe E - COFFRE DU DIRECTEUR.
         </div>
     </div>
@@ -192,14 +219,12 @@
         function rotate(dir) {
             if (isUnlocked) return;
 
-            // 1. Capture sur changement de direction pour les 4 premiers
             if (lastDir !== null && lastDir !== dir) {
                 capture(currentPointedIndex);
             }
 
             lastDir = dir;
 
-            // 2. Mise à jour de la rotation
             if (dir === 'right') {
                 currentAngle -= 30;
                 currentPointedIndex = (currentPointedIndex + 1) % 12;
@@ -210,14 +235,10 @@
 
             wheel.style.transform = `rotate(${currentAngle}deg)`;
 
-            // 3. Vérification immédiate pour le 5ème signe
-            // Si on a déjà 4 signes et qu'on arrive sur le 5ème correct
+            // Validation automatique au 5ème signe
             if (userInput.length === 4 && currentPointedIndex === solution[4]) {
-                // On attend la fin de l'animation de rotation (400ms) pour valider
                 setTimeout(autoValidate, 400);
-            } 
-            // Si on change de direction une 5ème fois sur le mauvais signe : reset
-            else if (userInput.length === 5) {
+            } else if (userInput.length === 5) {
                 reset();
             }
         }
@@ -242,18 +263,14 @@
 
             if (isCorrect) {
                 isUnlocked = true;
-                // On affiche le dernier signe dans le slot
                 document.getElementById('s4').innerText = zodiac[solution[4]];
                 document.getElementById('success-notif').style.display = 'block';
             } else if (userInput.length >= 4) {
-                // Si on a atteint le 5ème cran mais que la séquence globale est fausse
-                // (On laisse le joueur finir son mouvement, le reset se fera au prochain clic ou si c'est faux)
                 reset();
             }
         }
 
         function reset() {
-            // Petit feedback visuel de rouge avant le reset
             const slots = document.querySelectorAll('.slot');
             slots.forEach(s => s.style.borderColor = "var(--error)");
             
