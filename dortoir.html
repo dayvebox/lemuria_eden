@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Accès Dortoir - Carapace-Code</title>
+    <title>Accès Dortoir - 55 Investigations</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
@@ -10,8 +10,8 @@
             --panel-color: #1a1c23;
             --accent-color: #00d4ff;
             --text-primary: #ffffff;
-            --text-secondary: #94a3b8;
             --border-color: #2d3748;
+            --btn-active: #00d4ff;
         }
 
         body {
@@ -23,7 +23,6 @@
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
-            padding-bottom: 50px;
         }
 
         header {
@@ -46,77 +45,86 @@
         }
 
         .main-container {
-            width: 90%;
-            max-width: 800px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 50px;
             margin-top: 50px;
-            text-align: center;
+            width: 90%;
+            max-width: 1000px;
         }
 
-        /* --- SECTION CARAPACE DIGICODE --- */
-        .carapace-section {
+        /* --- DIGICODE --- */
+        .keypad-section {
+            text-align: center;
             background: var(--panel-color);
             padding: 30px;
             border-radius: 8px;
             border: 1px solid var(--border-color);
-            position: relative;
         }
 
-        h2 {
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: var(--accent-color);
-            margin-bottom: 10px;
-        }
-
-        p.instruction {
-            font-size: 0.8rem;
-            color: var(--text-secondary);
+        .grid-3x3 {
+            display: grid;
+            grid-template-columns: repeat(3, 80px);
+            grid-template-rows: repeat(3, 80px);
+            gap: 15px;
             margin-bottom: 30px;
         }
 
-        .carapace-wrapper {
+        .key-btn {
+            width: 80px;
+            height: 80px;
+            background: #2d3748;
+            border: 2px solid #4a5568;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .key-btn.active {
+            background: var(--accent-color);
+            border-color: #fff;
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.5);
+        }
+
+        /* --- RÉFÉRENCE CARAPACE --- */
+        .reference-section {
+            text-align: center;
+        }
+
+        .shell-container {
             position: relative;
-            display: inline-block;
+            width: 280px;
+            height: 280px;
+            background: var(--panel-color);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .shell-img {
-            max-height: 600px;
-            max-width: 100%;
-            display: block;
-            border: 1px solid rgba(255,255,255,0.05);
+            width: 200px;
+            opacity: 0.7;
         }
 
-        /* --- ZONES CLIQUABLES INVISIBLES (Carte d'image) --- */
-        /* Note : Les coordonnées sont des estimations basées sur une image affichée à max-height 600px.
-           L'idéal est d'utiliser un outil de mappage d'image pour définir les polygones précis de chaque scute.
-           J'ai simplifié en utilisant des rects pour les trois écailles centrales solution.
-        */
-        
-        area {
-            cursor: pointer;
-            outline: none;
+        .grid-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            border: 1px solid rgba(255,255,255,0.1);
         }
 
-        /* Effet visuel lors de la sélection (Difficile avec <map> pur, on change le message) */
-        
-        .control-panel {
-            margin-top: 30px;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .selected-counter {
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            margin-bottom: 15px;
+        .grid-overlay div {
+            border: 1px dashed rgba(0, 212, 255, 0.2);
         }
 
         .btn-validate {
-            width: 200px;
-            padding: 12px;
+            width: 100%;
+            padding: 15px;
             background: transparent;
             border: 2px solid var(--accent-color);
             color: var(--accent-color);
@@ -124,7 +132,6 @@
             cursor: pointer;
             text-transform: uppercase;
             letter-spacing: 2px;
-            transition: all 0.2s ease;
         }
 
         .btn-validate:hover {
@@ -133,110 +140,87 @@
         }
 
         #result-msg {
-            margin-top: 25px;
+            margin-top: 20px;
             display: none;
             color: #48bb78;
             font-weight: bold;
             padding: 15px;
             border: 1px solid #48bb78;
             background: rgba(72, 187, 120, 0.1);
-            max-width: 400px;
-            animation: fadeIn 0.5s ease;
         }
-
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
     </style>
 </head>
 <body>
 
 <header>
     <a href="index.html" class="home-btn"><i class="fas fa-home"></i></a>
-    <div style="font-weight: 800; letter-spacing: 2px; color: #fff;">DORTOIR DU PERSONNEL</div>
+    <div style="font-weight: 800; letter-spacing: 2px;">DORTOIR DU PERSONNEL</div>
 </header>
 
 <div class="main-container">
     
-    <div class="carapace-section">
-        <h2>CARAPACE-CODE [ACCÈS BIOMÉTRIQUE]</h2>
-        <p class="instruction">Identifiez la séquence correcte de scutes (écailles) pour valider l'accès.</p>
-        
-        <div class="carapace-wrapper">
-            <img src="image_984db6.png" class="shell-img" usemap="#carapaceMap" alt="Digicode Carapace">
-            
-            <map name="carapaceMap">
-                <area shape="rect" coords="310,130,470,200" alt="Central 1" onclick="selectScute('central1')">
-                
-                <area shape="rect" coords="310,200,470,310" alt="Central 2" onclick="selectScute('central2')">
-                
-                <area shape="rect" coords="310,310,470,420" alt="Central 3" onclick="selectScute('central3')">
-
-                <area shape="rect" coords="200,200,310,310" alt="Costale" onclick="selectScute('costale1')">
-                
-                </map>
+    <div class="keypad-section">
+        <h3 style="margin-top:0; font-size: 0.9rem; color: var(--accent-color);">DIGICODE SÉCURISÉ</h3>
+        <div class="grid-3x3" id="keypad">
+            <button class="key-btn" onclick="toggleKey(0)"></button>
+            <button class="key-btn" onclick="toggleKey(1)"></button>
+            <button class="key-btn" onclick="toggleKey(2)"></button>
+            <button class="key-btn" onclick="toggleKey(3)"></button>
+            <button class="key-btn" onclick="toggleKey(4)"></button>
+            <button class="key-btn" onclick="toggleKey(5)"></button>
+            <button class="key-btn" onclick="toggleKey(6)"></button>
+            <button class="key-btn" onclick="toggleKey(7)"></button>
+            <button class="key-btn" onclick="toggleKey(8)"></button>
         </div>
+        <button class="btn-validate" onclick="validate()">Valider</button>
+        <div id="result-msg">
+            ACCÈS AUTORISÉ.<br>Vous pouvez ouvrir l'enveloppe B - Dortoir du personnel.
+        </div>
+    </div>
 
-        <div class="control-panel">
-            <div class="selected-counter" id="counterMsg">Scutes sélectionnées : <span id="currentSelection"></span> / 3</div>
-            <button class="btn-validate" onclick="validate()">Valider</button>
-            <div id="result-msg">
-                <i class="fas fa-check-circle" style="margin-right: 10px;"></i>ACCÈS AUTORISÉ.<br>Vous pouvez ouvrir l'enveloppe B - Dortoir du personnel.
+    <div class="reference-section">
+        <h3 style="margin-top:0; font-size: 0.9rem; color: #666;">RÉFÉRENCE SYSTÈME</h3>
+        <div class="shell-container">
+            <img src="image_98b2d3.png" class="shell-img" alt="Schéma carapace">
+            <div class="grid-overlay">
+                <div></div><div></div><div></div>
+                <div></div><div></div><div></div>
+                <div></div><div></div><div></div>
             </div>
         </div>
+        <p style="font-size: 0.7rem; color: #444; margin-top: 10px;">Corrélation biométrique requise</p>
     </div>
 
 </div>
 
 <script>
-    let sequence = [];
-    let isLocked = false;
+    let activeKeys = [false, false, false, false, false, false, false, false, false];
     
-    // SOLUTION : Central 1, Central 2, Central 3 (indices plausibles)
-    const solutionSequence = ["central1", "central2", "central3"];
+    // SOLUTION : Colonne centrale (indices 1, 4, 7) basée sur la "colonne vertébrale" de la carapace
+    const solution = [1, 4, 7];
 
-    function selectScute(id) {
-        if (isLocked || sequence.length >= 3) return;
-        
-        sequence.push(id);
-        updateUI();
+    function toggleKey(index) {
+        activeKeys[index] = !activeKeys[index];
+        const buttons = document.querySelectorAll('.key-btn');
+        buttons[index].classList.toggle('active');
         document.getElementById('result-msg').style.display = "none";
-    }
-
-    function updateUI() {
-        const counter = document.getElementById('currentSelection');
-        counter.textContent = sequence.length;
     }
 
     function validate() {
-        if (sequence.length === 0) {
-            alert("Veuillez sélectionner au moins une scute.");
-            return;
-        }
-
-        if (sequence.length !== 3) {
-            alert("Accès refusé. Séquence incorrecte (3 scutes requises).");
-            reset();
-            return;
-        }
-
-        // Vérification si la séquence est correcte (ordre et contenu)
-        const isCorrect = sequence.length === solutionSequence.length && 
-                          sequence.every((val, index) => val === solutionSequence[index]);
+        const currentlyActive = activeKeys
+            .map((val, idx) => val ? idx : null)
+            .filter(val => val !== null);
+        
+        // Vérification si les longueurs correspondent et si chaque index de la solution est présent
+        const isCorrect = currentlyActive.length === solution.length && 
+                          solution.every(val => currentlyActive.includes(val));
 
         if (isCorrect) {
             document.getElementById('result-msg').style.display = "block";
-            isLocked = true; // Empêche d'autres clics
         } else {
-            alert("Accès refusé. Séquence incorrecte.");
-            reset();
+            alert("Accès refusé. Schéma incorrect.");
+            // Reset optionnel pour la difficulté
         }
-    }
-
-    function reset() {
-        sequence = [];
-        updateUI();
-        isLocked = false;
-        document.getElementById('result-msg').style.display = "none";
     }
 </script>
 
