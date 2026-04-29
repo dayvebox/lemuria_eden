@@ -13,6 +13,7 @@
             --border-color: #2d3748;
             --scute-idle: #2d3748;
             --scute-active: #00d4ff;
+            --error-color: #ff3e3e;
         }
 
         body {
@@ -52,34 +53,29 @@
             max-width: 600px;
         }
 
-        /* --- LE DIGICODE TORTUE --- */
+        /* --- LE DIGICODE TORTUE (SANS FORME RONDE) --- */
         .shell-keypad {
             display: flex;
             justify-content: center;
             align-items: flex-start;
-            gap: 10px;
-            padding: 40px;
-            background: radial-gradient(circle, #1a1c23 0%, #0b0c10 100%);
-            border-radius: 50% 50% 40% 40%; /* Forme de carapace */
-            border: 2px solid var(--border-color);
-            box-shadow: 0 0 30px rgba(0,0,0,0.5);
+            gap: 12px;
+            padding: 20px;
+            /* Suppression du background rond et des bordures de carapace */
         }
 
         .column {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
         }
 
-        /* Surélévation de la colonne centrale */
         .column-center {
-            margin-top: -30px;
+            margin-top: -35px; /* Surélévation de la colonne centrale */
         }
 
-        /* Style des écailles (Hexagones) */
         .scute {
-            width: 80px;
-            height: 90px;
+            width: 85px;
+            height: 95px;
             background-color: var(--scute-idle);
             clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
             display: flex;
@@ -88,19 +84,22 @@
             cursor: pointer;
             transition: all 0.2s ease;
             border: none;
-            color: rgba(255,255,255,0.1);
-            font-weight: bold;
+            outline: none;
         }
 
         .scute:hover {
             background-color: #3d495d;
-            transform: scale(1.05);
         }
 
         .scute.active {
-            background-color: var(--accent-color);
+            background-color: var(--scute-active);
             box-shadow: 0 0 20px var(--accent-color);
-            color: #000;
+        }
+
+        /* État d'erreur clignotant */
+        .scute.error-flash {
+            background-color: var(--error-color) !important;
+            box-shadow: 0 0 20px var(--error-color) !important;
         }
 
         /* --- CONTRÔLES --- */
@@ -109,7 +108,7 @@
         }
 
         .btn-validate {
-            padding: 12px 40px;
+            padding: 12px 30px;
             background: transparent;
             border: 2px solid var(--accent-color);
             color: var(--accent-color);
@@ -118,6 +117,7 @@
             font-weight: bold;
             cursor: pointer;
             transition: 0.3s;
+            margin: 5px;
         }
 
         .btn-validate:hover {
@@ -125,34 +125,51 @@
             color: #000;
         }
 
+        .btn-reset {
+            border-color: #4a5568;
+            color: #4a5568;
+        }
+
+        .btn-reset:hover {
+            background: #4a5568;
+            color: #fff;
+        }
+
         #status-msg {
-            margin-top: 20px;
-            font-size: 0.9rem;
-            min-height: 20px;
+            margin-top: 25px;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            height: 20px;
         }
 
         #success-panel {
             display: none;
-            background: rgba(72, 187, 120, 0.2);
+            background: rgba(72, 187, 120, 0.1);
             border: 1px solid #48bb78;
             padding: 20px;
-            border-radius: 8px;
-            margin-top: 20px;
+            border-radius: 4px;
+            margin-top: 25px;
             color: #48bb78;
+            animation: slideIn 0.4s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(10px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
         }
     </style>
 </head>
 <body>
 
     <header>
-        <a href="index.html" class="home-btn"><i class="fas fa-home"></i></a>
-        <div style="font-weight: 800; letter-spacing: 2px;">SYSTÈME D'ACCÈS DORTOIR</div>
+        <a href="index.html" class="home-btn" title="Retour au Hub"><i class="fas fa-home"></i></a>
+        <div style="font-weight: 800; letter-spacing: 2px;">UNITÉ DE CONTRÔLE : DORTOIR</div>
     </header>
 
     <div class="main-container">
-        <h2 style="font-size: 0.8rem; color: var(--accent-color); letter-spacing: 3px;">SÉQUENCE BIOMÉTRIQUE REQUISE</h2>
+        <h2 style="font-size: 0.75rem; color: #4a5568; letter-spacing: 3px; margin-bottom: 40px;">SCANNER LA STRUCTURE DE LA CARAPACE</h2>
         
-        <div class="shell-keypad">
+        <div class="shell-keypad" id="main-keypad">
             <div class="column">
                 <button class="scute" id="L1" onclick="press('L1')"></button>
                 <button class="scute" id="L2" onclick="press('L2')"></button>
@@ -177,48 +194,90 @@
         </div>
 
         <div class="controls">
-            <div id="status-msg">Séquence : <span id="seq-display">---</span></div>
-            <button class="btn-validate" onclick="validate()">Valider l'accès</button>
-            <button class="btn-validate" style="border-color: #666; color: #666; margin-left: 10px;" onclick="reset()">Réinitialiser</button>
+            <div id="status-msg">SÉQUENCE : <span id="seq-display">VIDE</span></div>
+            
+            <button class="btn-validate" onclick="validate()">DÉVERROUILLER</button>
+            <button class="btn-validate btn-reset" onclick="reset()">RÉINITIALISER</button>
             
             <div id="success-panel">
-                <i class="fas fa-unlock-alt"></i> ACCÈS DORTOIR DÉVERROUILLÉ<br>
-                Vous pouvez maintenant ouvrir l'enveloppe : <b>Dortoir du Personnel</b>.
+                <i class="fas fa-check-double"></i> SÉQUENCE VALIDÉE<br>
+                <b>Vous pouvez ouvrir l'enveloppe : Dortoir du Personnel</b>
             </div>
         </div>
     </div>
 
     <script>
         let currentSequence = [];
-        // SOLUTION : Haut-Milieu, Centre, Bas-Milieu (C1, C3, C5)
+        let isProcessing = false;
+        
+        // Solution : Colonne centrale (haut, milieu, bas)
         const solution = ["C1", "C3", "C5"];
 
         function press(id) {
-            if (currentSequence.includes(id)) return;
-            if (currentSequence.length >= 3) return;
+            if (isProcessing) return;
+            
+            const btn = document.getElementById(id);
+            
+            // Si déjà cliqué, on l'enlève (toggle)
+            if (currentSequence.includes(id)) {
+                currentSequence = currentSequence.filter(sid => sid !== id);
+                btn.classList.remove('active');
+            } else {
+                if (currentSequence.length >= 3) return; // Max 3 écailles
+                currentSequence.push(id);
+                btn.classList.add('active');
+            }
+            
+            updateDisplay();
+        }
 
-            currentSequence.push(id);
-            document.getElementById(id).classList.add('active');
-            document.getElementById('seq-display').innerText = currentSequence.join(' - ');
+        function updateDisplay() {
+            const display = document.getElementById('seq-display');
+            display.innerText = currentSequence.length > 0 ? currentSequence.join(' - ') : "VIDE";
+            display.style.color = "var(--accent-color)";
         }
 
         function reset() {
-            currentSequence.forEach(id => {
-                document.getElementById(id).classList.remove('active');
+            // Nettoie toutes les classes active et erreur
+            const scutes = document.querySelectorAll('.scute');
+            scutes.forEach(s => {
+                s.classList.remove('active');
+                s.classList.remove('error-flash');
             });
+            
             currentSequence = [];
-            document.getElementById('seq-display').innerText = "---";
+            isProcessing = false;
+            updateDisplay();
+            document.getElementById('seq-display').style.color = "inherit";
+            document.getElementById('status-msg').innerText = "SÉQUENCE : VIDE";
             document.getElementById('status-msg').style.color = "inherit";
         }
 
         function validate() {
-            if (JSON.stringify(currentSequence) === JSON.stringify(solution)) {
+            if (isProcessing) return;
+            if (currentSequence.length === 0) return;
+
+            isProcessing = true;
+
+            // Comparaison simple des tableaux
+            const isCorrect = currentSequence.length === solution.length && 
+                              currentSequence.every((val, index) => val === solution[index]);
+
+            if (isCorrect) {
                 document.getElementById('success-panel').style.display = 'block';
                 document.getElementById('status-msg').style.display = 'none';
             } else {
-                document.getElementById('status-msg').innerText = "ERREUR DE SÉQUENCE - ACCÈS REFUSÉ";
-                document.getElementById('status-msg').style.color = "#ff3e3e";
-                setTimeout(reset, 1000);
+                // Feedback d'erreur
+                document.getElementById('status-msg').innerText = "SÉQUENCE INCORRECTE - RÉINITIALISATION...";
+                document.getElementById('status-msg').style.color = "var(--error-color)";
+                
+                // Clignotement rouge des touches actives
+                currentSequence.forEach(id => {
+                    document.getElementById(id).classList.add('error-flash');
+                });
+
+                // Reset automatique après 1.2s pour laisser voir l'erreur
+                setTimeout(reset, 1200);
             }
         }
     </script>
