@@ -2,183 +2,161 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Cartographie - Lémuria Eden</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>55 Investigation - Hub Tactique</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
-            --sidebar-width: 250px;
-            --accent: #d4af37;
-            --bg: #0a0a0c;
+            --bg: #0a0b10;
+            --card-bg: #161a23;
+            --accent: #00e5ff; /* Bleu "Hacker" */
+            --gold: #d4af37; /* Optionnel pour le côté luxe */
+            --text: #e0e0e0;
         }
 
         body {
-            margin: 0;
             background-color: var(--bg);
-            color: #eee;
-            font-family: 'Segoe UI', sans-serif;
-            display: flex;
-            height: 100vh;
-            overflow: hidden; /* Empêche tout scroll global */
-        }
-
-        /* --- SIDEBAR --- */
-        #sidebar {
-            width: var(--sidebar-width);
-            background: #151518;
-            border-right: 2px solid #333;
+            color: var(--text);
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
             display: flex;
             flex-direction: column;
-            padding: 30px 20px;
-            z-index: 100;
-            flex-shrink: 0;
-        }
-
-        h2 { font-size: 1.1rem; color: var(--accent); margin-bottom: 25px; text-transform: uppercase; }
-
-        .btn-layer {
-            background: #25252b;
-            border: 1px solid #444;
-            color: #aaa;
-            padding: 15px;
-            margin-bottom: 12px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: 0.3s;
-            border-radius: 4px;
-            text-align: left;
-        }
-
-        .btn-layer.active { 
-            background: var(--accent); 
-            color: #000; 
-            border-color: #fff;
-        }
-
-        /* --- ZONE DE LA CARTE --- */
-        #map-viewport {
-            flex-grow: 1;
-            background: #000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px; /* Marge de sécurité autour de la carte */
-            position: relative;
-        }
-
-        .map-wrapper {
-            position: relative;
-            /* Ces deux lignes assurent que l'image ne dépasse jamais l'écran */
-            max-width: 100%;
-            max-height: 100%;
-            display: flex;
-            justify-content: center;
             align-items: center;
         }
 
-        #base-map {
-            display: block;
-            max-width: 100%;
-            max-height: 100%;
-            width: auto;
-            height: auto;
-            pointer-events: none;
-            box-shadow: 0 0 30px rgba(0,0,0,0.8);
-        }
-
-        .layer {
-            position: absolute;
-            top: 0;
-            left: 0;
-            /* Le calque prend exactement la taille affichée du plan de base */
+        header {
+            padding: 40px 20px;
+            text-align: center;
+            border-bottom: 1px solid #222;
             width: 100%;
-            height: 100%;
-            object-fit: contain; /* Garde les proportions même en cas de décalage */
-            cursor: move;
-            opacity: 0.7;
-            display: none;
-            z-index: 10;
+            background: linear-gradient(to bottom, #10121a, var(--bg));
         }
 
-        .layer.active {
-            display: block;
+        h1 {
+            letter-spacing: 4px;
+            font-weight: 300;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin: 0;
         }
+
+        .main-hub {
+            max-width: 1100px;
+            width: 90%;
+            padding: 40px 0;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 40px;
+        }
+
+        @media (min-width: 768px) {
+            .main-hub { grid-template-columns: 2fr 1fr; }
+        }
+
+        .category-title {
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #666;
+            margin-bottom: 20px;
+            border-left: 3px solid var(--accent);
+            padding-left: 15px;
+        }
+
+        .grid-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .link-card {
+            background: var(--card-bg);
+            border: 1px solid #2a2f3a;
+            padding: 20px;
+            text-decoration: none;
+            color: var(--text);
+            border-radius: 4px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .link-card:hover {
+            border-color: var(--accent);
+            background: #1c222d;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 229, 255, 0.1);
+        }
+
+        .link-card i {
+            font-size: 1.5rem;
+            margin-bottom: 12px;
+            color: var(--accent);
+        }
+
+        .link-card span { font-size: 0.9rem; font-weight: 500; }
+
+        .resource-card { border-left: 4px solid var(--gold); }
+        .resource-card i { color: var(--gold); }
     </style>
 </head>
 <body>
 
-<div id="sidebar">
-    <h2>Superposition SIG</h2>
-    <button class="btn-layer" onclick="toggleLayer('flore')" id="btn-flore">CALQUE FLORE</button>
-    <button class="btn-layer" onclick="toggleLayer('faune')" id="btn-faune">CALQUE FAUNE</button>
-    
-    <div style="margin-top:auto; font-size: 0.8rem; color:#666;">
-        Maintenez le clic pour déplacer le calque actif.
-    </div>
+<header>
+    <h1><i class="fas fa-shield-halved"></i> 55 Investigation - Réseau Aldabra</h1>
+</header>
+
+<div class="main-hub">
+    <section>
+        <div class="category-title">Déverrouiller une enveloppe</div>
+        <div class="grid-links">
+            <a href="reception.html" class="link-card">
+                <i class="fas fa-desktop"></i>
+                <span>PC de la réception</span>
+            </a>
+            <a href="dortoir.html" class="link-card">
+                <i class="fas fa-bed"></i>
+                <span>Dortoir du personnel</span>
+            </a>
+            <a href="police.html" class="link-card">
+                <i class="fas fa-folder-open"></i>
+                <span>Dossier de police</span>
+            </a>
+            <a href="abri.html" class="link-card">
+                <i class="fas fa-cloud-bolt"></i>
+                <span>Abri anti-tempête</span>
+            </a>
+            <a href="satellite.html" class="link-card">
+                <i class="fas fa-satellite-dish"></i>
+                <span>Téléphone satellite</span>
+            </a>
+            <a href="coffre.html" class="link-card">
+                <i class="fas fa-vault"></i>
+                <span>Coffre du directeur</span>
+            </a>
+            <a href="usb.html" class="link-card">
+                <i class="fas fa-usb"></i>
+                <span>Clé USB</span>
+            </a>
+        </div>
+    </section>
+
+    <section>
+        <div class="category-title">Ressources Additionnelles</div>
+        <div class="grid-links">
+            <a href="casiers.html" class="link-card resource-card">
+                <i class="fas fa-fingerprint"></i>
+                <span>Casiers judiciaires</span>
+            </a>
+            <a href="carte.html" class="link-card resource-card">
+                <i class="fas fa-map-marked-alt"></i>
+                <span>Carte maritime</span>
+            </a>
+        </div>
+    </section>
 </div>
-
-<div id="map-viewport">
-    <div class="map-wrapper" id="container">
-        <img src="plan.jpg" id="base-map">
-        
-        <img src="flore.png" id="layer-flore" class="layer">
-        <img src="faune.png" id="layer-faune" class="layer">
-    </div>
-</div>
-
-<script>
-    const state = {
-        active: null,
-        flore: { x: 50, y: 40 }, // Décalage initial
-        faune: { x: -40, y: 60 }
-    };
-
-    let isDragging = false;
-    let startX, startY;
-
-    function toggleLayer(layerId) {
-        if (state.active && state.active !== layerId) {
-            document.getElementById(`layer-${state.active}`).classList.remove('active');
-            document.getElementById(`btn-${state.active}`).classList.remove('active');
-        }
-
-        const el = document.getElementById(`layer-${layerId}`);
-        const btn = document.getElementById(`btn-${layerId}`);
-
-        if (state.active === layerId) {
-            el.classList.remove('active');
-            btn.classList.remove('active');
-            state.active = null;
-        } else {
-            state.active = layerId;
-            el.classList.add('active');
-            btn.classList.add('active');
-            updatePos(el, state[layerId]);
-        }
-    }
-
-    // Gestion du Drag
-    window.addEventListener('mousedown', (e) => {
-        if (state.active && e.target.id === `layer-${state.active}`) {
-            isDragging = true;
-            // On calcule le point de départ
-            startX = e.clientX - state[state.active].x;
-            startY = e.clientY - state[state.active].y;
-            e.preventDefault();
-        }
-    });
-
-    window.addEventListener('mousemove', (e) => {
-        if (!isDragging) return;
-        state[state.active].x = e.clientX - startX;
-        state[state.active].y = e.clientY - startY;
-        updatePos(document.getElementById(`layer-${state.active}`), state[state.active]);
-    });
-
-    window.addEventListener('mouseup', () => isDragging = false);
-
-    function updatePos(el, pos) {
-        el.style.transform = `translate(${pos.x}px, ${pos.y}px)`;
-    }
-</script>
 
 </body>
 </html>
