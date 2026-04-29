@@ -151,6 +151,31 @@
             text-align: center;
             padding: 20px;
         }
+
+        .home-btn {
+    position: fixed; /* Reste en place au scroll */
+    top: 20px;
+    left: 20px;
+    width: 50px;
+    height: 50px;
+    background-color: #1e293b; /* Couleur sombre pro */
+    color: #f1f5f9;
+    border-radius: 50%; /* Bouton rond */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    z-index: 9999; /* Toujours au premier plan */
+    border: 1px solid #334155;
+    transition: all 0.3s ease;
+}
+
+.home-btn:hover {
+    background-color: #38bdf8; /* Devient bleu au survol */
+    color: #0f172a;
+    transform: scale(1.1);
+}
     </style>
 </head>
 <body>
