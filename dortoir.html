@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Accès Dortoir - BIOS-Shell V2</title>
+    <title>Accès Dortoir - BIOS-Shell V3</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
@@ -14,6 +14,7 @@
             --scute-idle: #2d3748;
             --scute-active: #00d4ff;
             --error-color: #ff3e3e;
+            --outline-color: #2a2f3a;
         }
 
         body {
@@ -47,236 +48,187 @@
         }
 
         .main-container {
-            margin-top: 50px;
+            margin-top: 60px;
             text-align: center;
             width: 100%;
-            max-width: 600px;
+            max-width: 800px;
         }
 
-        /* --- LE DIGICODE TORTUE (SANS FORME RONDE) --- */
-        .shell-keypad {
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            gap: 12px;
-            padding: 20px;
-            /* Suppression du background rond et des bordures de carapace */
+        /* --- SILHOUETTE DE LA TORTUE --- */
+        .turtle-system {
+            position: relative;
+            display: inline-block;
+            padding: 50px;
         }
 
-        .column {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
+        .head-outline {
+            position: absolute;
+            top: 0; left: 50%; transform: translateX(-50%);
+            width: 50px; height: 70px;
+            border: 2px solid var(--outline-color);
+            border-radius: 25px 25px 10px 10px;
         }
 
-        .column-center {
-            margin-top: -35px; /* Surélévation de la colonne centrale */
+        .tail-outline {
+            position: absolute;
+            bottom: 10px; left: 50%; transform: translateX(-50%);
+            width: 0; height: 0;
+            border-left: 12px solid transparent; border-right: 12px solid transparent;
+            border-top: 25px solid var(--outline-color);
         }
+
+        .flipper { position: absolute; width: 60px; height: 90px; border: 2px solid var(--outline-color); }
+        .f-tl { top: 60px; left: 0; border-radius: 100% 0 50% 50%; transform: rotate(-35deg); }
+        .f-tr { top: 60px; right: 0; border-radius: 0 100% 50% 50%; transform: rotate(35deg); }
+        .f-bl { bottom: 60px; left: 10px; border-radius: 50% 50% 0 100%; transform: rotate(25deg); }
+        .f-br { bottom: 60px; right: 10px; border-radius: 50% 50% 100% 0%; transform: rotate(-25deg); }
+
+        .shell-body {
+            position: relative; z-index: 2;
+            padding: 45px 35px;
+            border: 2px solid var(--outline-color);
+            border-radius: 110px;
+            background: var(--bg-color);
+            display: flex; justify-content: center; align-items: flex-start; gap: 10px;
+        }
+
+        /* --- ÉCAILLES --- */
+        .column { display: flex; flex-direction: column; gap: 10px; }
+        .column-center { margin-top: -35px; }
 
         .scute {
-            width: 85px;
-            height: 95px;
+            width: 75px; height: 85px;
             background-color: var(--scute-idle);
             clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            border: none;
-            outline: none;
+            display: flex; justify-content: center; align-items: center;
+            cursor: pointer; transition: all 0.2s ease; border: none; outline: none;
         }
+        .scute:hover { background-color: #3d495d; }
+        .scute.active { background-color: var(--scute-active); box-shadow: 0 0 15px var(--accent-color); }
+        .scute.error-flash { background-color: var(--error-color) !important; }
 
-        .scute:hover {
-            background-color: #3d495d;
-        }
-
-        .scute.active {
-            background-color: var(--scute-active);
-            box-shadow: 0 0 20px var(--accent-color);
-        }
-
-        /* État d'erreur clignotant */
-        .scute.error-flash {
-            background-color: var(--error-color) !important;
-            box-shadow: 0 0 20px var(--error-color) !important;
-        }
-
-        /* --- CONTRÔLES --- */
-        .controls {
-            margin-top: 40px;
-        }
-
+        /* --- UI --- */
+        .controls { margin-top: 40px; }
         .btn-validate {
-            padding: 12px 30px;
-            background: transparent;
-            border: 2px solid var(--accent-color);
-            color: var(--accent-color);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-            margin: 5px;
+            padding: 12px 35px; background: transparent; border: 2px solid var(--accent-color);
+            color: var(--accent-color); text-transform: uppercase; letter-spacing: 2px;
+            font-weight: bold; cursor: pointer; transition: 0.3s; margin: 5px;
         }
+        .btn-validate:hover { background: var(--accent-color); color: #000; }
+        .btn-reset { border-color: #4a5568; color: #4a5568; }
 
-        .btn-validate:hover {
-            background: var(--accent-color);
-            color: #000;
-        }
-
-        .btn-reset {
-            border-color: #4a5568;
-            color: #4a5568;
-        }
-
-        .btn-reset:hover {
-            background: #4a5568;
-            color: #fff;
-        }
-
-        #status-msg {
-            margin-top: 25px;
-            font-size: 0.85rem;
-            letter-spacing: 1px;
-            height: 20px;
-        }
-
+        #status-msg { margin-top: 25px; font-size: 0.85rem; height: 20px; letter-spacing: 1px; }
         #success-panel {
-            display: none;
-            background: rgba(72, 187, 120, 0.1);
-            border: 1px solid #48bb78;
-            padding: 20px;
-            border-radius: 4px;
-            margin-top: 25px;
-            color: #48bb78;
-            animation: slideIn 0.4s ease-out;
-        }
-
-        @keyframes slideIn {
-            from { transform: translateY(10px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+            display: none; background: rgba(72, 187, 120, 0.1); border: 1px solid #48bb78;
+            padding: 20px; border-radius: 4px; margin-top: 25px; color: #48bb78;
         }
     </style>
 </head>
 <body>
 
     <header>
-        <a href="index.html" class="home-btn" title="Retour au Hub"><i class="fas fa-home"></i></a>
-        <div style="font-weight: 800; letter-spacing: 2px;">UNITÉ DE CONTRÔLE : DORTOIR</div>
+        <a href="index.html" class="home-btn"><i class="fas fa-home"></i></a>
+        <div style="font-weight: 800; letter-spacing: 2px;">IDENTIFICATION BIOMÉTRIQUE : DORTOIR</div>
     </header>
 
     <div class="main-container">
-        <h2 style="font-size: 0.75rem; color: #4a5568; letter-spacing: 3px; margin-bottom: 40px;">SCANNER LA STRUCTURE DE LA CARAPACE</h2>
         
-        <div class="shell-keypad" id="main-keypad">
-            <div class="column">
-                <button class="scute" id="L1" onclick="press('L1')"></button>
-                <button class="scute" id="L2" onclick="press('L2')"></button>
-                <button class="scute" id="L3" onclick="press('L3')"></button>
-                <button class="scute" id="L4" onclick="press('L4')"></button>
-            </div>
+        <div class="turtle-system">
+            <div class="head-outline"></div>
+            <div class="flipper f-tl"></div>
+            <div class="flipper f-tr"></div>
+            <div class="flipper f-bl"></div>
+            <div class="flipper f-br"></div>
+            <div class="tail-outline"></div>
 
-            <div class="column column-center">
-                <button class="scute" id="C1" onclick="press('C1')"></button>
-                <button class="scute" id="C2" onclick="press('C2')"></button>
-                <button class="scute" id="C3" onclick="press('C3')"></button>
-                <button class="scute" id="C4" onclick="press('C4')"></button>
-                <button class="scute" id="C5" onclick="press('C5')"></button>
-            </div>
-
-            <div class="column">
-                <button class="scute" id="R1" onclick="press('R1')"></button>
-                <button class="scute" id="R2" onclick="press('R2')"></button>
-                <button class="scute" id="R3" onclick="press('R3')"></button>
-                <button class="scute" id="R4" onclick="press('R4')"></button>
+            <div class="shell-body">
+                <div class="column">
+                    <button class="scute" id="L1" onclick="press('L1')"></button>
+                    <button class="scute" id="L2" onclick="press('L2')"></button>
+                    <button class="scute" id="L3" onclick="press('L3')"></button>
+                    <button class="scute" id="L4" onclick="press('L4')"></button>
+                </div>
+                <div class="column column-center">
+                    <button class="scute" id="C1" onclick="press('C1')"></button>
+                    <button class="scute" id="C2" onclick="press('C2')"></button>
+                    <button class="scute" id="C3" onclick="press('C3')"></button>
+                    <button class="scute" id="C4" onclick="press('C4')"></button>
+                    <button class="scute" id="C5" onclick="press('C5')"></button>
+                </div>
+                <div class="column">
+                    <button class="scute" id="R1" onclick="press('R1')"></button>
+                    <button class="scute" id="R2" onclick="press('R2')"></button>
+                    <button class="scute" id="R3" onclick="press('R3')"></button>
+                    <button class="scute" id="R4" onclick="press('R4')"></button>
+                </div>
             </div>
         </div>
 
         <div class="controls">
-            <div id="status-msg">SÉQUENCE : <span id="seq-display">VIDE</span></div>
-            
+            <div id="status-msg">SÉLECTION : <span id="seq-display">VIDE</span></div>
             <button class="btn-validate" onclick="validate()">DÉVERROUILLER</button>
             <button class="btn-validate btn-reset" onclick="reset()">RÉINITIALISER</button>
             
             <div id="success-panel">
-                <i class="fas fa-check-double"></i> SÉQUENCE VALIDÉE<br>
-                <b>Vous pouvez ouvrir l'enveloppe : Dortoir du Personnel</b>
+                <i class="fas fa-check-circle"></i> STRUCTURE VALIDÉE<br>
+                <b>Ouvrez l'enveloppe : Dortoir du Personnel</b>
             </div>
         </div>
     </div>
 
     <script>
-        let currentSequence = [];
+        let currentSelection = [];
         let isProcessing = false;
         
-        // Solution : Colonne centrale (haut, milieu, bas)
-        const solution = ["C1", "C3", "C5"];
+        // Nouvelle solution
+        const solution = ["C1", "L3", "R2"];
 
         function press(id) {
             if (isProcessing) return;
-            
             const btn = document.getElementById(id);
             
-            // Si déjà cliqué, on l'enlève (toggle)
-            if (currentSequence.includes(id)) {
-                currentSequence = currentSequence.filter(sid => sid !== id);
+            if (currentSelection.includes(id)) {
+                currentSelection = currentSelection.filter(sid => sid !== id);
                 btn.classList.remove('active');
             } else {
-                if (currentSequence.length >= 3) return; // Max 3 écailles
-                currentSequence.push(id);
+                if (currentSelection.length >= 3) return;
+                currentSelection.push(id);
                 btn.classList.add('active');
             }
-            
             updateDisplay();
         }
 
         function updateDisplay() {
             const display = document.getElementById('seq-display');
-            display.innerText = currentSequence.length > 0 ? currentSequence.join(' - ') : "VIDE";
-            display.style.color = "var(--accent-color)";
+            display.innerText = currentSelection.length > 0 ? currentSelection.join(' - ') : "VIDE";
         }
 
         function reset() {
-            // Nettoie toutes les classes active et erreur
-            const scutes = document.querySelectorAll('.scute');
-            scutes.forEach(s => {
-                s.classList.remove('active');
-                s.classList.remove('error-flash');
+            document.querySelectorAll('.scute').forEach(s => {
+                s.classList.remove('active', 'error-flash');
             });
-            
-            currentSequence = [];
+            currentSelection = [];
             isProcessing = false;
             updateDisplay();
-            document.getElementById('seq-display').style.color = "inherit";
-            document.getElementById('status-msg').innerText = "SÉQUENCE : VIDE";
+            document.getElementById('status-msg').innerText = "SÉLECTION : VIDE";
             document.getElementById('status-msg').style.color = "inherit";
         }
 
         function validate() {
-            if (isProcessing) return;
-            if (currentSequence.length === 0) return;
-
+            if (isProcessing || currentSelection.length === 0) return;
             isProcessing = true;
 
-            // Comparaison simple des tableaux
-            const isCorrect = currentSequence.length === solution.length && 
-                              currentSequence.every((val, index) => val === solution[index]);
+            // Vérification : les deux tableaux doivent contenir les mêmes éléments (l'ordre n'importe pas)
+            const isCorrect = currentSelection.length === solution.length && 
+                              solution.every(val => currentSelection.includes(val));
 
             if (isCorrect) {
                 document.getElementById('success-panel').style.display = 'block';
                 document.getElementById('status-msg').style.display = 'none';
             } else {
-                // Feedback d'erreur
-                document.getElementById('status-msg').innerText = "SÉQUENCE INCORRECTE - RÉINITIALISATION...";
+                document.getElementById('status-msg').innerText = "STRUCTURE NON RECONNUE";
                 document.getElementById('status-msg').style.color = "var(--error-color)";
-                
-                // Clignotement rouge des touches actives
-                currentSequence.forEach(id => {
-                    document.getElementById(id).classList.add('error-flash');
-                });
-
-                // Reset automatique après 1.2s pour laisser voir l'erreur
+                currentSelection.forEach(id => document.getElementById(id).classList.add('error-flash'));
                 setTimeout(reset, 1200);
             }
         }
