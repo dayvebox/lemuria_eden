@@ -5,6 +5,30 @@
     <title>Smartphone - Accès Sécurisé</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+        .home-btn {
+    position: fixed; /* Reste en place au scroll */
+    top: 20px;
+    left: 20px;
+    width: 50px;
+    height: 50px;
+    background-color: #1e293b; /* Couleur sombre pro */
+    color: #f1f5f9;
+    border-radius: 50%; /* Bouton rond */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    z-index: 9999; /* Toujours au premier plan */
+    border: 1px solid #334155;
+    transition: all 0.3s ease;
+}
+
+.home-btn:hover {
+    background-color: #38bdf8; /* Devient bleu au survol */
+    color: #0f172a;
+    transform: scale(1.1);
+}
         :root {
             --phone-bg: #000;
             --screen-bg: #121212;
@@ -14,9 +38,7 @@
         }
 
         body {
-            <a href="index.html" class="home-btn" title="Retour à l'accueil">
-    <i class="fas fa-home"></i>
-</a>
+           
             background-color: #1a1a1a;
             color: white;
             font-family: 'Inter', -apple-system, sans-serif;
@@ -182,7 +204,9 @@
     </style>
 </head>
 <body>
-
+ <a href="index.html" class="home-btn" title="Retour à l'accueil">
+    <i class="fas fa-home"></i>
+</a>
 <div class="phone-frame">
     <div class="phone-screen">
         <div class="status-bar">
