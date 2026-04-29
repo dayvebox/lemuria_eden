@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>55 Investigations - USB DECRYPT</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --hacker-green: #00ff41;
+            --hacker-dark: #0a0a0a;
+            --hacker-dim: #003b00;
+        }
+
+        body {
+            background-color: var(--hacker-dark);
+            color: var(--hacker-green);
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        #terminal {
+            max-width: 850px;
+            width: 100%;
+            line-height: 1.4;
+            white-space: pre-wrap;
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 10px;
+            height: 18px;
+            background: var(--hacker-green);
+            animation: blink 0.8s infinite;
+            vertical-align: middle;
+        }
+
+        @keyframes blink { 50% { opacity: 0; } }
+
+        /* --- FORMULAIRE --- */
+        #login-area {
+            display: none;
+            margin-top: 20px;
+            border-top: 1px solid var(--hacker-dim);
+            padding-top: 20px;
+        }
+
+        .input-row {
+            margin: 15px 0;
+            display: flex;
+            align-items: center;
+        }
+
+        label { margin-right: 15px; font-weight: bold; }
+
+        input {
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid var(--hacker-dim);
+            color: var(--hacker-green);
+            font-family: inherit;
+            font-size: 1.1rem;
+            outline: none;
+            width: 300px;
+            letter-spacing: 2px;
+        }
+
+        input:focus { border-color: var(--hacker-green); }
+
+        .btn-decrypt {
+            background: var(--hacker-green);
+            color: black;
+            border: none;
+            padding: 10px 25px;
+            font-family: inherit;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+            text-transform: uppercase;
+        }
+
+        .btn-decrypt:hover { background: white; }
+
+        #error-msg {
+            color: #ff3e3e;
+            display: none;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        /* --- LISTE AUDIO --- */
+        #audio-vault {
+            display: none;
+            margin-top: 30px;
+            animation: fadeIn 1s;
+        }
+
+        .audio-item {
+            background: #111;
+            padding: 15px;
+            margin-bottom: 10px;
+            border: 1px solid var(--hacker-dim);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        audio {
+            width: 100%;
+            filter: invert(100%) hue-rotate(90deg) brightness(1.5);
+        }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body>
+
+<div id="terminal">
+    <div id="typewriter"></div><span class="cursor" id="main-cursor"></span>
+
+    <div id="login-area">
+        <div class="input-row">
+            <label>LOGIN [9] :</label>
+            <input type="text" id="loginInput" placeholder="_ _ _ _ _ _ _ _ _" maxlength="9" autocomplete="off">
+        </div>
+        <div class="input-row">
+            <label>PASSWORD [14] :</label>
+            <input type="text" id="passInput" placeholder="_ _ _ _ _ _ _ _ _ _ _ _ _ _" maxlength="14" autocomplete="off">
+        </div>
+        <button class="btn-decrypt" onclick="verifyAccess()">Lancer le décryptage</button>
+        <div id="error-msg">ACCÈS REFUSÉ : SIGNATURE NUMÉRIQUE INVALIDE. RÉESAYEZ.</div>
+    </div>
+
+    <div id="audio-vault">
+        <h2 style="border-bottom: 2px solid var(--hacker-green); padding-bottom: 10px;">UNITÉ USB DÉCRYPTÉE : Ethan_Private_Logs</h2>
+        
+        <div class="audio-item">
+            <span><i class="fas fa-file-audio"></i> audio1.mp3</span>
+            <audio controls src="audio1.mp3"></audio>
+        </div>
+
+        <div class="audio-item">
+            <span><i class="fas fa-file-audio"></i> audio2.mp3</span>
+            <audio controls src="audio2.mp3"></audio>
+        </div>
+
+        <div class="audio-item">
+            <span><i class="fas fa-file-audio"></i> audio3.mp3</span>
+            <audio controls src="audio3.mp3"></audio>
+        </div>
+
+        <div class="audio-item">
+            <span><i class="fas fa-file-audio"></i> audio4.mp3</span>
+            <audio controls src="audio4.mp3"></audio>
+        </div>
+		
+		<div class="audio-item">
+            <span><i class="fas fa-file-audio"></i> audio5.mp3</span>
+            <audio controls src="audio5.mp3"></audio>
+        </div>
+    </div>
+</div>
+
+<script>
+    const textLines = [
+        "55 INVESTIGATION - MODULE DE DÉCRYPTAGE FURTIF (V.3.1)",
+        "================================================================================",
+        "> Initialisation du protocole de contournement... [OK]",
+        "> Montage de l'unité amovible : USB_DRIVE_EXT... [SÉCURISÉ]",
+        "> Tentative de bypass manuel requise.",
+        "--------------------------------------------------------------------------------",
+        "ÉCHÉANCE DE SÉCURITÉ : SYSTÈME DE SECURITE \"Data Secure United\" DÉTECTÉ",
+        "--------------------------------------------------------------------------------",
+        "> 55 Investigation... Accès autorisé...",
+        "> CHARGEMENT DES PARAMÈTRES RÉGIONAUX : ",
+        "  - Localisation : Aldabra, Seychelles",
+        "  - UTC +4 : 10:45:22",
+        "  - Date : 27.09.2026",
+        "> CONSEIL DE SÉCURITÉ : \"LE SYSTEME DE SECURITE FAIT VARIER MES MOTS DE PASSE\"",
+        "> LOGIN REQUIS : _ _ _ _ _ _ _ _ _",
+        "> MOT DE PASSE : _ _ _ _ _ _ _ _ _ _ _ _ _ _",
+        " "
+    ];
+
+    const typewriter = document.getElementById('typewriter');
+    let lineIndex = 0;
+    let charIndex = 0;
+
+    function type() {
+        if (lineIndex < textLines.length) {
+            if (charIndex < textLines[lineIndex].length) {
+                typewriter.innerHTML += textLines[lineIndex].charAt(charIndex);
+                charIndex++;
+                setTimeout(type, 15); // Vitesse rapide
+            } else {
+                typewriter.innerHTML += "<br>";
+                lineIndex++;
+                charIndex = 0;
+                setTimeout(type, 150); // Pause entre les lignes
+            }
+        } else {
+            document.getElementById('main-cursor').style.display = 'none';
+            document.getElementById('login-area').style.display = 'block';
+        }
+    }
+
+    // Lancement de l'effet
+    window.onload = type;
+
+    function verifyAccess() {
+        const login = document.getElementById('loginInput').value.trim().toUpperCase();
+        const pass = document.getElementById('passInput').value.trim().toUpperCase();
+        const error = document.getElementById('error-msg');
+
+        // Solutions : TRUEETHAN (9) / EM789456DaSeUn (14)
+        if (login === "TRUEETHAN" && pass === "EM789456DASEUN") {
+            document.getElementById('login-area').style.display = 'none';
+            document.getElementById('audio-vault').style.display = 'block';
+            window.scrollTo(0, document.body.scrollHeight);
+        } else {
+            error.style.display = 'block';
+            // Animation de secousse pour l'erreur
+            document.getElementById('login-area').style.transform = 'translateX(10px)';
+            setTimeout(() => document.getElementById('login-area').style.transform = 'translateX(0)', 100);
+        }
+    }
+</script>
+
+</body>
+</html>
