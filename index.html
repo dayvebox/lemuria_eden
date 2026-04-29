@@ -3,160 +3,191 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>55 Investigation - Hub Tactique</title>
+    <title>55 Investigations - Dossier DC8</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
-            --bg: #0a0b10;
-            --card-bg: #161a23;
-            --accent: #00e5ff; /* Bleu "Hacker" */
-            --gold: #d4af37; /* Optionnel pour le côté luxe */
-            --text: #e0e0e0;
+            --bg-color: #0b0c10;
+            --panel-color: #1a1c23;
+            --accent-color: #00d4ff;
+            --text-primary: #ffffff;
+            --text-secondary: #94a3b8;
+            --border-color: #2d3748;
         }
 
         body {
-            background-color: var(--bg);
-            color: var(--text);
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            font-family: 'Inter', -apple-system, sans-serif;
             margin: 0;
+            padding: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
 
+        /* Header Style Maestro */
         header {
-            padding: 40px 20px;
-            text-align: center;
-            border-bottom: 1px solid #222;
             width: 100%;
-            background: linear-gradient(to bottom, #10121a, var(--bg));
+            background-color: #000;
+            padding: 15px 0;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
         }
 
-        h1 {
-            letter-spacing: 4px;
-            font-weight: 300;
-            text-transform: uppercase;
-            color: var(--accent);
-            margin: 0;
+        .logo-55 {
+            font-weight: 800;
+            letter-spacing: 3px;
+            font-size: 1.2rem;
+            color: var(--text-primary);
         }
 
-        .main-hub {
-            max-width: 1100px;
+        /* Case Info Box */
+        .case-header {
             width: 90%;
-            padding: 40px 0;
+            max-width: 1000px;
+            background: var(--panel-color);
+            margin: 30px 0;
+            padding: 25px;
+            border-radius: 8px;
             display: grid;
-            grid-template-columns: 1fr;
-            gap: 40px;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            border: 1px solid var(--border-color);
         }
 
-        @media (min-width: 768px) {
-            .main-hub { grid-template-columns: 2fr 1fr; }
-        }
-
-        .category-title {
-            font-size: 0.9rem;
-            letter-spacing: 2px;
+        .info-group label {
+            display: block;
+            color: var(--text-secondary);
+            font-size: 0.75rem;
             text-transform: uppercase;
-            color: #666;
-            margin-bottom: 20px;
-            border-left: 3px solid var(--accent);
-            padding-left: 15px;
+            margin-bottom: 5px;
+            letter-spacing: 1px;
         }
 
-        .grid-links {
+        .info-group span {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .status-unresolved {
+            color: #f56565;
+            font-weight: bold;
+        }
+
+        /* Main Sections */
+        .main-content {
+            width: 90%;
+            max-width: 1000px;
+        }
+
+        h2 {
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin: 40px 0 20px 0;
+            color: var(--accent-color);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+
+        .grid-container {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
             gap: 15px;
         }
 
-        .link-card {
-            background: var(--card-bg);
-            border: 1px solid #2a2f3a;
+        .card {
+            background: var(--panel-color);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
             padding: 20px;
             text-decoration: none;
-            color: var(--text);
-            border-radius: 4px;
+            color: var(--text-primary);
             display: flex;
-            flex-direction: column;
             align-items: center;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
+        }
+
+        .card:hover {
+            border-color: var(--accent-color);
+            background: #252833;
+            transform: scale(1.02);
+        }
+
+        .card i {
+            font-size: 1.2rem;
+            margin-right: 15px;
+            color: var(--accent-color);
+            width: 25px;
             text-align: center;
         }
 
-        .link-card:hover {
-            border-color: var(--accent);
-            background: #1c222d;
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0, 229, 255, 0.1);
+        .card-resource {
+            background: #11141d;
         }
 
-        .link-card i {
-            font-size: 1.5rem;
-            margin-bottom: 12px;
-            color: var(--accent);
+        .card-resource i {
+            color: #a0aec0;
         }
 
-        .link-card span { font-size: 0.9rem; font-weight: 500; }
-
-        .resource-card { border-left: 4px solid var(--gold); }
-        .resource-card i { color: var(--gold); }
+        footer {
+            margin: 60px 0 30px 0;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
 
-<header>
-    <h1><i class="fas fa-shield-halved"></i> 55 Investigation - Réseau Aldabra</h1>
-</header>
+    <header>
+        <div class="logo-55">55 INVESTIGATIONS</div>
+    </header>
 
-<div class="main-hub">
-    <section>
-        <div class="category-title">Déverrouiller une enveloppe</div>
-        <div class="grid-links">
-            <a href="reception.html" class="link-card">
-                <i class="fas fa-desktop"></i>
-                <span>PC de la réception</span>
-            </a>
-            <a href="dortoir.html" class="link-card">
-                <i class="fas fa-bed"></i>
-                <span>Dortoir du personnel</span>
-            </a>
-            <a href="police.html" class="link-card">
-                <i class="fas fa-folder-open"></i>
-                <span>Dossier de police</span>
-            </a>
-            <a href="abri.html" class="link-card">
-                <i class="fas fa-cloud-bolt"></i>
-                <span>Abri anti-tempête</span>
-            </a>
-            <a href="satellite.html" class="link-card">
-                <i class="fas fa-satellite-dish"></i>
-                <span>Téléphone satellite</span>
-            </a>
-            <a href="coffre.html" class="link-card">
-                <i class="fas fa-vault"></i>
-                <span>Coffre du directeur</span>
-            </a>
-            <a href="usb.html" class="link-card">
-                <i class="fas fa-usb"></i>
-                <span>Clé USB</span>
-            </a>
+    <div class="case-header">
+        <div class="info-group">
+            <label>Nom de l'affaire</label>
+            <span>Dossier DC8 - Lémuria Eden</span>
         </div>
-    </section>
+        <div class="info-group">
+            <label>Victime</label>
+            <span>Ethan (Alias Jason Reed)</span>
+        </div>
+        <div class="info-group">
+            <label>Lieu</label>
+            <span>Atoll d'Aldabra, Seychelles</span>
+        </div>
+        <div class="info-group">
+            <label>Statut</label>
+            <span class="status-unresolved">Non résolu</span>
+        </div>
+    </div>
 
-    <section>
-        <div class="category-title">Ressources Additionnelles</div>
-        <div class="grid-links">
-            <a href="casiers.html" class="link-card resource-card">
-                <i class="fas fa-fingerprint"></i>
-                <span>Casiers judiciaires</span>
-            </a>
-            <a href="carte.html" class="link-card resource-card">
-                <i class="fas fa-map-marked-alt"></i>
-                <span>Carte maritime</span>
-            </a>
+    <div class="main-content">
+        
+        <h2>Déverrouiller une enveloppe</h2>
+        <div class="grid-container">
+            <a href="reception.html" class="card"><i class="fas fa-desktop"></i> PC de la réception</a>
+            <a href="dortoir.html" class="card"><i class="fas fa-bed"></i> Dortoir du personnel</a>
+            <a href="police.html" class="card"><i class="fas fa-file-shield"></i> Dossier de police</a>
+            <a href="abri.html" class="card"><i class="fas fa-cloud-bolt"></i> Abri anti-tempête</a>
+            <a href="satellite.html" class="card"><i class="fas fa-satellite-dish"></i> Téléphone satellite</a>
+            <a href="coffre.html" class="card"><i class="fas fa-vault"></i> Coffre du directeur</a>
+            <a href="usb.html" class="card"><i class="fas fa-usb"></i> Clé USB</a>
         </div>
-    </section>
-</div>
+
+        <h2>Ressources Additionnelles</h2>
+        <div class="grid-container">
+            <a href="casiers.html" class="card card-resource"><i class="fas fa-fingerprint"></i> Casiers judiciaires</a>
+            <a href="carte.html" class="card card-resource"><i class="fas fa-map-location-dot"></i> Carte maritime</a>
+        </div>
+
+    </div>
+
+    <footer>
+        Système sécurisé 55 INVESTIGATIONS - Agent en service
+    </footer>
 
 </body>
 </html>
