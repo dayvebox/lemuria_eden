@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>55 Investigations - Contrôle Abri</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --panel-color: #161b22;
+            --accent-color: #f0883e; /* Orange industriel */
+            --text-primary: #c9d1d9;
+            --border-color: #30363d;
+            --on-color: #238636;
+            --off-color: #da3633;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            font-family: 'Share Tech Mono', monospace;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        header {
+            width: 100%;
+            background-color: #000;
+            padding: 15px 0;
+            text-align: center;
+            border-bottom: 2px solid var(--accent-color);
+            position: relative;
+        }
+
+        .home-btn {
+            position: absolute;
+            left: 20px; top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-primary);
+            text-decoration: none;
+            font-size: 1.2rem;
+        }
+
+        .container {
+            margin-top: 40px;
+            background: var(--panel-color);
+            padding: 40px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            max-width: 500px;
+            width: 90%;
+        }
+
+        h2 {
+            text-align: center;
+            color: var(--accent-color);
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* --- SWITCH STYLE --- */
+        .switch-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 4px;
+        }
+
+        .id-label {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #8b949e;
+            width: 50px;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 60px;
+            height: 30px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: var(--off-color);
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 22px; width: 22px;
+            left: 4px; bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--on-color);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(30px);
+        }
+
+        /* --- ACTIONS --- */
+        .actions {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .btn-validate {
+            background: transparent;
+            border: 2px solid var(--accent-color);
+            color: var(--accent-color);
+            padding: 12px 40px;
+            font-family: inherit;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: 0.3s;
+        }
+
+        .btn-validate:hover {
+            background: var(--accent-color);
+            color: #000;
+        }
+
+        #success-msg {
+            display: none;
+            margin-top: 25px;
+            padding: 20px;
+            border: 1px solid var(--on-color);
+            background: rgba(35, 134, 54, 0.1);
+            color: #7ee787;
+            font-weight: bold;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body>
+
+<header>
+    <a href="index.html" class="home-btn"><i class="fas fa-home"></i></a>
+    <div style="font-weight: bold; letter-spacing: 1px;">UNITÉ DE FILTRAGE - ABRI 04</div>
+</header>
+
+<div class="container">
+    <h2>Configuration des vannes</h2>
+    
+    <div id="switch-board">
+        <div class="switch-row">
+            <span class="id-label">SZ</span>
+            <label class="toggle-switch"><input type="checkbox" id="SZ" checked><span class="slider"></span></label>
+        </div>
+        <div class="switch-row">
+            <span class="id-label">PT</span>
+            <label class="toggle-switch"><input type="checkbox" id="PT" checked><span class="slider"></span></label>
+        </div>
+        <div class="switch-row">
+            <span class="id-label">AX</span>
+            <label class="toggle-switch"><input type="checkbox" id="AX" checked><span class="slider"></span></label>
+        </div>
+        <div class="switch-row">
+            <span class="id-label">S</span>
+            <label class="toggle-switch"><input type="checkbox" id="S" checked><span class="slider"></span></label>
+        </div>
+        <div class="switch-row">
+            <span class="id-label">LP</span>
+            <label class="toggle-switch"><input type="checkbox" id="LP" checked><span class="slider"></span></label>
+        </div>
+        <div class="switch-row">
+            <span class="id-label">BP</span>
+            <label class="toggle-switch"><input type="checkbox" id="BP" checked><span class="slider"></span></label>
+        </div>
+        <div class="switch-row">
+            <span class="id-label">D</span>
+            <label class="toggle-switch"><input type="checkbox" id="D" checked><span class="slider"></span></label>
+        </div>
+        <div class="switch-row">
+            <span class="id-label">LH</span>
+            <label class="toggle-switch"><input type="checkbox" id="LH" checked><span class="slider"></span></label>
+        </div>
+        <div class="switch-row">
+            <span class="id-label">ZW</span>
+            <label class="toggle-switch"><input type="checkbox" id="ZW" checked><span class="slider"></span></label>
+        </div>
+    </div>
+
+    <div class="actions">
+        <button class="btn-validate" onclick="checkCombination()">Valider</button>
+        <div id="success-msg">
+            <i class="fas fa-unlock-alt"></i> ANALYSE TERMINÉE : CONFIGURATION OPTIMALE.<br><br>
+            Vous pouvez ouvrir l'enveloppe D - ABRI ANTI TEMPETE.
+        </div>
+    </div>
+</div>
+
+<script>
+    function checkCombination() {
+        const switches = {
+            SZ: document.getElementById('SZ').checked,
+            PT: document.getElementById('PT').checked,
+            AX: document.getElementById('AX').checked,
+            S: document.getElementById('S').checked,
+            LP: document.getElementById('LP').checked,
+            BP: document.getElementById('BP').checked,
+            D: document.getElementById('D').checked,
+            LH: document.getElementById('LH').checked,
+            ZW: document.getElementById('ZW').checked
+        };
+
+        // Condition de victoire : LH, ZW, AX, LP sur OFF (false), les autres sur ON (true)
+        const isCorrect = 
+            switches.SZ === true &&
+            switches.PT === true &&
+            switches.AX === false &&
+            switches.S === true &&
+            switches.LP === false &&
+            switches.BP === true &&
+            switches.D === true &&
+            switches.LH === false &&
+            switches.ZW === false;
+
+        const msg = document.getElementById('success-msg');
+        if (isCorrect) {
+            msg.style.display = 'block';
+            window.scrollTo(0, document.body.scrollHeight);
+        } else {
+            msg.style.display = 'none';
+            alert("ERREUR : Équilibrage des pressions incorrect.");
+        }
+    }
+</script>
+
+</body>
+</html>

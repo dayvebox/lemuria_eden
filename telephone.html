@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Smartphone - Accès Sécurisé</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --phone-bg: #000;
+            --screen-bg: #121212;
+            --accent: #00d4ff;
+            --dot-color: #333;
+            --line-color: rgba(0, 212, 255, 0.6);
+        }
+
+        body {
+            background-color: #1a1a1a;
+            color: white;
+            font-family: 'Inter', -apple-system, sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* --- LE SMARTPHONE --- */
+        .phone-frame {
+            width: 320px;
+            height: 650px;
+            background: var(--phone-bg);
+            border-radius: 40px;
+            padding: 12px;
+            border: 4px solid #333;
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+            position: relative;
+        }
+
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            background: var(--screen-bg);
+            border-radius: 30px;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Barre d'état */
+        .status-bar {
+            height: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 25px;
+            font-size: 0.7rem;
+            color: #888;
+        }
+
+        /* Fenêtre de notification */
+        .notification {
+            background: rgba(255, 255, 255, 0.1);
+            margin: 10px;
+            padding: 15px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.05);
+            animation: slideDown 0.5s ease-out;
+        }
+
+        @keyframes slideDown { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        .notif-header {
+            font-size: 0.6rem;
+            color: var(--accent);
+            text-transform: uppercase;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .notif-body {
+            font-size: 0.8rem;
+            line-height: 1.2;
+        }
+
+        /* --- GRILLE DE DÉVERROUILLAGE --- */
+        .pattern-container {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            touch-action: none; /* Empêche le scroll sur mobile */
+        }
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 10;
+        }
+
+        .dots-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            width: 240px;
+            height: 240px;
+            z-index: 5;
+        }
+
+        .dot-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            background: var(--dot-color);
+            border-radius: 50%;
+            transition: transform 0.2s;
+        }
+
+        .dot.active {
+            background: var(--accent);
+            box-shadow: 0 0 15px var(--accent);
+            transform: scale(1.5);
+        }
+
+        .unlock-msg {
+            text-align: center;
+            padding-bottom: 50px;
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        /* Message de succès */
+        #success-screen {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #000;
+            z-index: 100;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="phone-frame">
+    <div class="phone-screen">
+        <div class="status-bar">
+            <span>06:00</span>
+            <div>
+                <i class="fas fa-wifi"></i>
+                <i class="fas fa-battery-three-quarters"></i>
+            </div>
+        </div>
+
+        <div class="notification">
+            <div class="notif-header">Rappels tâches</div>
+            <div class="notif-body">
+                Fréquence : quotidienne à 6h<br>
+                Surveillance des 4 ilots
+            </div>
+        </div>
+
+        <div class="pattern-container" id="container">
+            <canvas id="patternCanvas"></canvas>
+            <div class="dots-grid">
+                <div class="dot-wrapper"><div class="dot" id="dot-0"></div></div> <div class="dot-wrapper"><div class="dot" id="dot-1"></div></div> <div class="dot-wrapper"><div class="dot" id="dot-2"></div></div> <div class="dot-wrapper"><div class="dot" id="dot-3"></div></div> <div class="dot-wrapper"><div class="dot" id="dot-4"></div></div> <div class="dot-wrapper"><div class="dot" id="dot-5"></div></div> <div class="dot-wrapper"><div class="dot" id="dot-6"></div></div> <div class="dot-wrapper"><div class="dot" id="dot-7"></div></div> <div class="dot-wrapper"><div class="dot" id="dot-8"></div></div> </div>
+        </div>
+
+        <div class="unlock-msg">Tracer le motif de déverrouillage</div>
+
+        <div id="success-screen">
+            <i class="fas fa-unlock" style="font-size: 3rem; color: var(--accent); margin-bottom: 20px;"></i>
+            <h2 style="color: white;">TÉLÉPHONE DÉVERROUILLÉ</h2>
+            <p style="color: #888;">Accès autorisé</p>
+            <div style="margin-top: 30px; padding: 15px; border: 1px solid var(--accent); color: var(--accent); font-weight: bold;">
+                Vous pouvez ouvrir l'enveloppe E - Téléphone satellite
+            </div>
+            <a href="index.html" style="margin-top: 40px; color: #444; text-decoration: none; font-size: 0.8rem;">Fermer</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    const canvas = document.getElementById('patternCanvas');
+    const ctx = canvas.getContext('2d');
+    const container = document.getElementById('container');
+    const dots = document.querySelectorAll('.dot');
+    
+    let isDrawing = false;
+    let path = [];
+    
+    // NOUVELLE SOLUTION : A1 B1 C1 C2 C3 B2 A3 A2 A1
+    // Correspondance indices : A1=0, B1=1, C1=2, A2=3, B2=4, C2=5, A3=6, B3=7, C3=8
+    const solution = [0, 1, 2, 5, 8, 4, 6, 3, 0];
+
+    function resize() {
+        canvas.width = container.clientWidth;
+        canvas.height = container.clientHeight;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    function getDotIndex(x, y) {
+        for (let i = 0; i < dots.length; i++) {
+            const rect = dots[i].getBoundingClientRect();
+            const dotX = rect.left + rect.width / 2 - container.getBoundingClientRect().left;
+            const dotY = rect.top + rect.height / 2 - container.getBoundingClientRect().top;
+            const dist = Math.hypot(x - dotX, y - dotY);
+            if (dist < 25) return i; // Rayon de détection
+        }
+        return null;
+    }
+
+    function getDotPos(index) {
+        const rect = dots[index].getBoundingClientRect();
+        return {
+            x: rect.left + rect.width / 2 - container.getBoundingClientRect().left,
+            y: rect.top + rect.height / 2 - container.getBoundingClientRect().top
+        };
+    }
+
+    function startDraw(e) {
+        isDrawing = true;
+        path = [];
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        dots.forEach(d => d.classList.remove('active'));
+        handleMove(e);
+    }
+
+    function handleMove(e) {
+        if (!isDrawing) return;
+        e.preventDefault();
+        
+        const rect = container.getBoundingClientRect();
+        const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+        const y = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
+
+        const dotIndex = getDotIndex(x, y);
+        
+        // Logique de tracé mise à jour pour accepter la boucle finale
+        if (dotIndex !== null) {
+            // Si c'est un nouveau point
+            if (!path.includes(dotIndex)) {
+                path.push(dotIndex);
+                dots[dotIndex].classList.add('active');
+            } 
+            // Cas spécial pour la boucle finale (A1 - index 0)
+            else if (dotIndex === 0 && path.length === 8 && path[7] === 3) {
+                path.push(0);
+                dots[0].classList.add('active');
+            }
+        }
+
+        draw(x, y);
+    }
+
+    function draw(mouseX, mouseY) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.strokeStyle = '#00d4ff';
+        ctx.lineWidth = 4;
+        ctx.lineJoin = 'round';
+        ctx.lineCap = 'round';
+
+        if (path.length === 0) return;
+
+        ctx.beginPath();
+        const start = getDotPos(path[0]);
+        ctx.moveTo(start.x, start.y);
+
+        for (let i = 1; i < path.length; i++) {
+            const pos = getDotPos(path[i]);
+            ctx.lineTo(pos.x, pos.y);
+        }
+
+        ctx.lineTo(mouseX, mouseY); // Ligne vers le curseur/doigt
+        ctx.stroke();
+    }
+
+    function endDraw() {
+        if (!isDrawing) return;
+        isDrawing = false;
+
+        // Validation stricte
+        const isCorrect = path.length === solution.length && 
+                          path.every((val, index) => val === solution[index]);
+
+        if (isCorrect) {
+            document.getElementById('success-screen').style.display = 'flex';
+        } else {
+            // Feedback d'erreur (rouge temporaire)
+            ctx.strokeStyle = '#ff3e3e';
+            ctx.stroke();
+            dots.forEach(d => { if(d.classList.contains('active')) d.style.background = '#ff3e3e'; });
+
+            setTimeout(() => {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                dots.forEach(d => {
+                    d.classList.remove('active');
+                    d.style.background = ''; // Reset couleur
+                });
+                path = [];
+            }, 300);
+        }
+    }
+
+    // Event Listeners Souris
+    container.addEventListener('mousedown', startDraw);
+    window.addEventListener('mousemove', handleMove);
+    window.addEventListener('mouseup', endDraw);
+
+    // Event Listeners Tactile
+    container.addEventListener('touchstart', startDraw);
+    window.addEventListener('touchmove', handleMove);
+    window.addEventListener('touchend', endDraw);
+
+</script>
+
+</body>
+</html>

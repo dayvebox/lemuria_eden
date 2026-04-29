@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>VTS Aldabra - Surveillance Flotte</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #0b1117;
+            --panel-color: #161b22;
+            --accent: #00d4ff;
+            --text: #c9d1d9;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        header {
+            width: 100%;
+            background-color: #000;
+            padding: 15px 0;
+            text-align: center;
+            border-bottom: 2px solid var(--accent);
+            z-index: 10;
+        }
+
+        /* --- ÉCRAN 1 : AUTHENTIFICATION --- */
+        #auth-screen {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle, #161b22 0%, #0b1117 100%);
+        }
+
+        .auth-card {
+            background: var(--panel-color);
+            padding: 40px;
+            border-radius: 8px;
+            border: 1px solid #30363d;
+            text-align: center;
+            box-shadow: 0 10px 50px rgba(0,0,0,0.5);
+        }
+
+        .id-input {
+            background: #0d1117;
+            border: 2px solid var(--accent);
+            color: var(--accent);
+            font-family: 'Courier New', monospace;
+            font-size: 2.5rem;
+            width: 180px;
+            text-align: center;
+            margin: 20px 0;
+            padding: 10px;
+            outline: none;
+            border-radius: 4px;
+        }
+
+        .btn {
+            background: transparent;
+            border: 2px solid var(--accent);
+            color: var(--accent);
+            padding: 12px 40px;
+            cursor: pointer;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: 0.3s;
+        }
+
+        .btn:hover { background: var(--accent); color: #000; }
+
+        /* --- ÉCRAN 2 : CARTE --- */
+        #map-screen {
+            display: none; /* Caché par défaut */
+            flex: 1;
+            display: none; 
+            grid-template-columns: 300px 1fr;
+        }
+
+        .sidebar {
+            background: var(--panel-color);
+            border-right: 1px solid #30363d;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .log-btn {
+            background: #0d1117;
+            border: 1px solid #30363d;
+            color: var(--text);
+            padding: 15px;
+            text-align: left;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+        }
+
+        .log-btn:hover { border-color: var(--accent); }
+        .log-btn.active { background: var(--accent); color: #000; border-color: var(--accent); }
+
+        .map-area {
+            position: relative;
+            background-color: #0b1117;
+            /* Petit quadrillage de fond */
+            background-image: linear-gradient(rgba(0,212,255,0.05) 1px, transparent 1px), 
+                              linear-gradient(90deg, rgba(0,212,255,0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+            overflow: hidden;
+        }
+
+        /* Images */
+        .island-img {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%; /* Ajuste selon ton image */
+            opacity: 0.7;
+        }
+
+        #boat {
+            position: absolute;
+            width: 40px; /* Taille du bateau */
+            z-index: 100;
+            display: none;
+            transition: all 0.7s ease-in-out; /* Animation entre les points */
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div style="font-weight: 800; letter-spacing: 2px; color: var(--accent);">VTS ALDABRA : TRACKING SYSTEM</div>
+</header>
+
+<div id="auth-screen">
+    <div class="auth-card">
+        <div style="font-size: 0.8rem; color: #8b949e; text-transform: uppercase;">Entrer l'identifiant du navire</div>
+        <input type="text" id="boatID" class="id-input" placeholder="000" maxlength="3" onkeypress="handleEnter(event)">
+        <br>
+        <button class="btn" onclick="verifyID()">Analyser les logs</button>
+    </div>
+</div>
+
+<div id="map-screen">
+    <div class="sidebar">
+        <h3 style="font-size: 0.9rem; margin-bottom: 20px; color: var(--accent);">LOGS RÉCENTS : ID 356</h3>
+        <button class="log-btn" onclick="runAnimation(this)">21/09 - 06:01:14</button>
+        <button class="log-btn" onclick="runAnimation(this)">22/09 - 05:58:42</button>
+        <button class="log-btn" onclick="runAnimation(this)">23/09 - 06:02:10</button>
+        <button class="log-btn" onclick="runAnimation(this)">24/09 - 05:59:05</button>
+        
+        <div style="margin-top: auto; font-size: 0.7rem; color: #444;">
+            <i class="fas fa-satellite"></i> Liaison satellite active<br>
+            Station : Aldabra-North-East
+        </div>
+    </div>
+
+    <div class="map-area">
+        <img src="assets/carte.png" class="island-img" alt="Carte de l'île">
+        
+        <img id="boat" src="assets/bateau.png" alt="Navire 356">
+    </div>
+</div>
+
+<script>
+    // 1. GESTION DE LA CONNEXION
+    function handleEnter(e) {
+        if (e.key === 'Enter') verifyID();
+    }
+
+    function verifyID() {
+        const input = document.getElementById('boatID').value.trim();
+        
+        if (input === "356") {
+            document.getElementById('auth-screen').style.display = 'none';
+            // On force le mode grid pour l'affichage
+            document.getElementById('map-screen').style.display = 'grid'; 
+        } else {
+            alert("ID Navire inconnu. Accès refusé.");
+            document.getElementById('boatID').value = "";
+        }
+    }
+
+    // 2. GESTION DE L'ANIMATION
+    // Coordonnées en % (Tu pourras les ajuster pour qu'elles tombent pile sur tes ilots)
+    // Grille imaginaire : A(30%), B(50%), C(70%) / 1(20%), 2(45%), 3(70%)
+    const grid = {
+        "A1": { x: 58, y: 55, r: 90 },
+        "C1": { x: 66, y: 55, r: 180 },
+        "C3": { x: 66, y: 73, r: 270 },
+        "B2": { x: 62, y: 65, r: 315 }, // Diagonale vers le milieu
+        "A3": { x: 58, y: 73, r: 0 },
+        "A1_FIN": { x: 58, y: 55, r: 0 }
+    };
+
+    const path = ["A1", "C1", "C3", "B2", "A3", "A1_FIN"];
+
+    async function runAnimation(btn) {
+        // Style bouton
+        document.querySelectorAll('.log-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        const boat = document.getElementById('boat');
+        boat.style.display = "block";
+
+        // Parcours du trajet
+        for (let step of path) {
+            const pos = grid[step];
+            boat.style.left = pos.x + "%";
+            boat.style.top = pos.y + "%";
+            boat.style.transform = `translate(-50%, -50%) rotate(${pos.rot}deg)`;
+            
+            // Attendre la fin de la transition avant le prochain point
+            await new Promise(resolve => setTimeout(resolve, 800));
+        }
+    }
+</script>
+
+</body>
+</html>
