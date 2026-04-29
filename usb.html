@@ -139,27 +139,27 @@
         
         <div class="audio-item">
             <span><i class="fas fa-file-audio"></i> audio1.mp3</span>
-            <audio controls src="audio1.mp3"></audio>
+            <audio controls src="assets/audio1.mp3"></audio>
         </div>
 
         <div class="audio-item">
             <span><i class="fas fa-file-audio"></i> audio2.mp3</span>
-            <audio controls src="audio2.mp3"></audio>
+            <audio controls src="assets/audio2.mp3"></audio>
         </div>
 
         <div class="audio-item">
             <span><i class="fas fa-file-audio"></i> audio3.mp3</span>
-            <audio controls src="audio3.mp3"></audio>
+            <audio controls src="assets/audio3.mp3"></audio>
         </div>
 
         <div class="audio-item">
             <span><i class="fas fa-file-audio"></i> audio4.mp3</span>
-            <audio controls src="audio4.mp3"></audio>
+            <audio controls src="assets/audio4.mp3"></audio>
         </div>
 		
 		<div class="audio-item">
             <span><i class="fas fa-file-audio"></i> audio5.mp3</span>
-            <audio controls src="audio5.mp3"></audio>
+            <audio controls src="assets/audio5.mp3"></audio>
         </div>
     </div>
 </div>
@@ -194,12 +194,12 @@
             if (charIndex < textLines[lineIndex].length) {
                 typewriter.innerHTML += textLines[lineIndex].charAt(charIndex);
                 charIndex++;
-                setTimeout(type, 15); // Vitesse rapide
+                setTimeout(type, 10); // Vitesse rapide
             } else {
                 typewriter.innerHTML += "<br>";
                 lineIndex++;
                 charIndex = 0;
-                setTimeout(type, 150); // Pause entre les lignes
+                setTimeout(type, 50); // Pause entre les lignes
             }
         } else {
             document.getElementById('main-cursor').style.display = 'none';
