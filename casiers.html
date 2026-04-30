@@ -245,6 +245,8 @@
 
         // On cherche si "salome" ET "riviere" sont présents, peu importe l'ordre
         const isSalome = query.includes("salome") && query.includes("riviere");
+        const isPaolo = query.includes("paolo") && query.includes("moretti");
+        const isThomas = query.includes("thomas") && query.includes("reed");
 
         if (isSalome) {
             warning.style.display = 'block';
@@ -260,7 +262,37 @@
                     </div>
                 </div>
             `;
-        } else {
+        } 
+        if (isPaolo) {
+            warning.style.display = 'block';
+            resultArea.innerHTML = `
+                <div class="criminal-record">
+                    <div class="record-header">DOSSIER CRIMINEL : SALOMÉ RIVIÈRE</div>
+                    <div class="record-body">
+                        <p><span class="label">Date de naissance :</span> 26 mars 1981</p>
+                        <p><span class="label">Dernière activité :</span> Rapport police du 13/12/2018</p>
+                        <p><span class="label">Motif principal :</span> Exercice illégal de la médecine</p>
+                        <p><span class="label">Plaintes civiles :</span> 3 signalements pour abus de confiance</p>
+                        <p><span class="label">Note de sûreté :</span> Impliquée dans un système d'arnaque pyramidale à grande échelle (Type Ponzi). Profil fugitif potentiel.</p>
+                    </div>
+                </div>
+            `;
+        }
+        if (isThomas) {
+            warning.style.display = 'block';
+            resultArea.innerHTML = `
+                <div class="criminal-record">
+                    <div class="record-header">DOSSIER CRIMINEL : SALOMÉ RIVIÈRE</div>
+                    <div class="record-body">
+                        <p><span class="label">Date de naissance :</span> 26 mars 1981</p>
+                        <p><span class="label">Dernière activité :</span> Rapport police du 13/12/2018</p>
+                        <p><span class="label">Motif principal :</span> Exercice illégal de la médecine</p>
+                        <p><span class="label">Plaintes civiles :</span> 3 signalements pour abus de confiance</p>
+                        <p><span class="label">Note de sûreté :</span> Impliquée dans un système d'arnaque pyramidale à grande échelle (Type Ponzi). Profil fugitif potentiel.</p>
+                    </div>
+                </div>
+            `;
+        }else {
             warning.style.display = 'none';
             resultArea.innerHTML = `
                 <div class="no-result">
