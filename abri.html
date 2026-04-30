@@ -59,9 +59,56 @@
             text-align: center;
             color: var(--accent-color);
             font-size: 1.2rem;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             text-transform: uppercase;
             letter-spacing: 2px;
+        }
+
+        /* --- SYSTÈME D'IMAGE (INDICE) --- */
+        .clue-box {
+            text-align: center;
+            margin-bottom: 25px;
+            padding: 10px;
+            border: 1px dashed var(--border-color);
+            background: rgba(0,0,0,0.2);
+        }
+
+        .thumbnail {
+            width: 120px;
+            cursor: zoom-in;
+            border: 2px solid var(--accent-color);
+            border-radius: 4px;
+            transition: transform 0.2s;
+        }
+
+        .thumbnail:hover { transform: scale(1.05); }
+
+        .clue-label {
+            display: block;
+            font-size: 0.7rem;
+            color: var(--accent-color);
+            margin-top: 8px;
+            text-transform: uppercase;
+        }
+
+        /* Overlay Agrandissement */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            cursor: zoom-out;
+        }
+
+        .enlarged-img {
+            max-width: 90%;
+            max-height: 90%;
+            border: 2px solid var(--accent-color);
+            box-shadow: 0 0 30px rgba(240, 136, 62, 0.3);
         }
 
         /* --- SWITCH STYLE --- */
@@ -88,11 +135,7 @@
             height: 30px;
         }
 
-        .toggle-switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
 
         .slider {
             position: absolute;
@@ -113,19 +156,11 @@
             border-radius: 50%;
         }
 
-        input:checked + .slider {
-            background-color: var(--on-color);
-        }
-
-        input:checked + .slider:before {
-            transform: translateX(30px);
-        }
+        input:checked + .slider { background-color: var(--on-color); }
+        input:checked + .slider:before { transform: translateX(30px); }
 
         /* --- ACTIONS --- */
-        .actions {
-            margin-top: 30px;
-            text-align: center;
-        }
+        .actions { margin-top: 30px; text-align: center; }
 
         .btn-validate {
             background: transparent;
@@ -140,10 +175,7 @@
             transition: 0.3s;
         }
 
-        .btn-validate:hover {
-            background: var(--accent-color);
-            color: #000;
-        }
+        .btn-validate:hover { background: var(--accent-color); color: #000; }
 
         #success-msg {
             display: none;
@@ -167,7 +199,13 @@
 </header>
 
 <div class="container">
-    <h2>Configuration des vannes</h2>
+    <h2>Alimentation électroqie des bâtiments</h2>
+
+    <!-- IMAGE INDICE (DANS L'ÉNIGME) -->
+    <div class="clue-box">
+        <img src="assets/schema_abri.jpg" alt="Schéma Indice" class="thumbnail" onclick="toggleOverlay(true)">
+        <span class="clue-label">Cliquer pour agrandir l'indice</span>
+    </div>
     
     <div id="switch-board">
         <div class="switch-row">
@@ -217,7 +255,17 @@
     </div>
 </div>
 
+<!-- OVERLAY POUR L'AGRANDISSEMENT -->
+<div id="clue-overlay" class="overlay" onclick="toggleOverlay(false)">
+    <img src="schema_abri.jpg" alt="Schéma Agrandi" class="enlarged-img">
+</div>
+
 <script>
+    // Fonction pour gérer l'agrandissement de l'image
+    function toggleOverlay(show) {
+        document.getElementById('clue-overlay').style.display = show ? 'flex' : 'none';
+    }
+
     function checkCombination() {
         const switches = {
             SZ: document.getElementById('SZ').checked,
@@ -231,7 +279,6 @@
             ZW: document.getElementById('ZW').checked
         };
 
-        // Condition de victoire : LH, ZW, AX, LP sur OFF (false), les autres sur ON (true)
         const isCorrect = 
             switches.SZ === true &&
             switches.PT === true &&
