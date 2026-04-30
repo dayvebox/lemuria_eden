@@ -180,9 +180,6 @@
         let currentSelection = [];
         let isProcessing = false;
         
-        // Nouvelle solution
-        const solution = ["C1", "L3", "R2"];
-
         function press(id) {
             if (isProcessing) return;
             const btn = document.getElementById(id);
@@ -212,15 +209,32 @@
             updateDisplay();
             document.getElementById('status-msg').innerText = "SÉLECTION : VIDE";
             document.getElementById('status-msg').style.color = "inherit";
+            document.getElementById('success-panel').style.display = 'none';
         }
 
         function validate() {
             if (isProcessing || currentSelection.length === 0) return;
             isProcessing = true;
 
-            // Vérification : les deux tableaux doivent contenir les mêmes éléments (l'ordre n'importe pas)
-            const isCorrect = currentSelection.length === solution.length && 
-                              solution.every(val => currentSelection.includes(val));
+            // --- LOGIQUE MODIFIÉE ---
+            // On vérifie :
+            // 1. Qu'il y a exactement 3 éléments
+            // 2. Que C1 est inclus
+            // 3. Que R2 est inclus
+            // 4. Que (L2 OU L3) est inclus
+            const hasC1 = currentSelection.includes("C1");
+            const hasR2 = currentSelection.includes("R2");
+            const hasL2 = currentSelection.includes("L2");
+            const hasL3 = currentSelection.includes("L3");
+
+            // Puisque la longueur est limitée à 3 au moment du clic, si C1 et R2 sont sélectionnés,
+            // il est impossible d'avoir L2 ET L3 en même temps sans dépasser 3 éléments.
+            // Donc (hasL2 || hasL3) suffit pour valider "l'un ou l'autre".
+            const isCorrect = currentSelection.length === 3 && 
+                              hasC1 && 
+                              hasR2 && 
+                              (hasL2 || hasL3);
+            // ------------------------
 
             if (isCorrect) {
                 document.getElementById('success-panel').style.display = 'block';
