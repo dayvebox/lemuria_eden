@@ -6,29 +6,30 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         .home-btn {
-    position: fixed; /* Reste en place au scroll */
-    top: 20px;
-    left: 20px;
-    width: 50px;
-    height: 50px;
-    background-color: #1e293b; /* Couleur sombre pro */
-    color: #f1f5f9;
-    border-radius: 50%; /* Bouton rond */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-decoration: none;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.4);
-    z-index: 9999; /* Toujours au premier plan */
-    border: 1px solid #334155;
-    transition: all 0.3s ease;
-}
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 50px;
+            height: 50px;
+            background-color: #1e293b;
+            color: #f1f5f9;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            z-index: 9999;
+            border: 1px solid #334155;
+            transition: all 0.3s ease;
+        }
 
-.home-btn:hover {
-    background-color: #38bdf8; /* Devient bleu au survol */
-    color: #0f172a;
-    transform: scale(1.1);
-}
+        .home-btn:hover {
+            background-color: #38bdf8;
+            color: #0f172a;
+            transform: scale(1.1);
+        }
+
         :root {
             --interpol-blue: #003366;
             --interpol-dark: #001a33;
@@ -88,7 +89,6 @@
             color: var(--interpol-blue);
         }
 
-        /* --- SEARCH AREA --- */
         .search-box {
             display: flex;
             gap: 10px;
@@ -123,7 +123,6 @@
             background-color: var(--interpol-dark);
         }
 
-        /* --- RESULTS --- */
         #result-area {
             margin-top: 20px;
             min-height: 100px;
@@ -192,43 +191,42 @@
 </head>
 <body>
     <a href="index.html" class="home-btn" title="Retour à l'accueil">
-    <i class="fas fa-home"></i>
-</a>
+        <i class="fas fa-home"></i>
+    </a>
 
-<header>
-    <div style="font-weight: bold; letter-spacing: 1px;">INTERNATIONAL CRIMINAL POLICE ORGANIZATION</div>
-</header>
+    <header>
+        <div style="font-weight: bold; letter-spacing: 1px;">INTERNATIONAL CRIMINAL POLICE ORGANIZATION</div>
+    </header>
 
-<div class="container">
-    <div class="logo-area">
-        <i class="fas fa-globe-americas"></i>
-        <h1>Nominal Database Search</h1>
+    <div class="container">
+        <div class="logo-area">
+            <i class="fas fa-globe-americas"></i>
+            <h1>Nominal Database Search</h1>
+        </div>
+
+        <div class="warning-banner" id="warning">
+            RESTRICTED ACCESS - PROCEED WITH CAUTION
+        </div>
+
+        <div class="search-box">
+            <input type="text" id="nameSearch" placeholder="Entrer Nom + Prénom..." onkeypress="handleEnter(event)">
+            <button class="btn-search" onclick="performSearch()">RECHERCHER</button>
+        </div>
+
+        <div id="result-area">
+            <div class="no-result">Veuillez entrer un nom pour interroger la base de données.</div>
+        </div>
     </div>
 
-    <div class="warning-banner" id="warning">
-        RESTRICTED ACCESS - PROCEED WITH CAUTION
-    </div>
-
-    <div class="search-box">
-        <input type="text" id="nameSearch" placeholder="Entrer un nom (ex: John Doe)..." onkeypress="handleEnter(event)">
-        <button class="btn-search" onclick="performSearch()">RECHERCHER</button>
-    </div>
-
-    <div id="result-area">
-        <div class="no-result">Veuillez entrer un nom pour interroger la base de données.</div>
-    </div>
-</div>
-
-<footer>
-    &copy; INTERPOL 2026 - Accès réservé aux agences de maintien de l'ordre autorisées (Protocol 44-B).
-</footer>
+    <footer>
+        &copy; INTERPOL 2026 - Accès réservé aux agences de maintien de l'ordre autorisées (Protocol 44-B).
+    </footer>
 
 <script>
     function handleEnter(e) {
         if (e.key === 'Enter') performSearch();
     }
 
-    // Fonction pour normaliser le texte (minuscules, sans accents)
     function normalize(str) {
         return str.toLowerCase()
                   .normalize("NFD")
@@ -243,10 +241,12 @@
         
         if (!query) return;
 
-        // On cherche si "salome" ET "riviere" sont présents, peu importe l'ordre
+        // On vérifie que les DEUX termes sont présents dans la recherche
         const isSalome = query.includes("salome") && query.includes("riviere");
         const isPaolo = query.includes("paolo") && query.includes("moretti");
         const isThomas = query.includes("thomas") && query.includes("reed");
+
+        warning.style.display = 'none';
 
         if (isSalome) {
             warning.style.display = 'block';
@@ -260,46 +260,41 @@
                         <p><span class="label">Plaintes civiles :</span> 3 signalements pour abus de confiance</p>
                         <p><span class="label">Note de sûreté :</span> Impliquée dans un système d'arnaque pyramidale à grande échelle (Type Ponzi). Profil fugitif potentiel.</p>
                     </div>
-                </div>
-            `;
+                </div>`;
         } 
-        if (isPaolo) {
+        else if (isPaolo) {
             warning.style.display = 'block';
             resultArea.innerHTML = `
                 <div class="criminal-record">
-                    <div class="record-header">DOSSIER CRIMINEL : SALOMÉ RIVIÈRE</div>
+                    <div class="record-header">DOSSIER CRIMINEL : PAOLO MORETTI</div>
                     <div class="record-body">
-                        <p><span class="label">Date de naissance :</span> 26 mars 1981</p>
-                        <p><span class="label">Dernière activité :</span> Rapport police du 13/12/2018</p>
-                        <p><span class="label">Motif principal :</span> Exercice illégal de la médecine</p>
-                        <p><span class="label">Plaintes civiles :</span> 3 signalements pour abus de confiance</p>
-                        <p><span class="label">Note de sûreté :</span> Impliquée dans un système d'arnaque pyramidale à grande échelle (Type Ponzi). Profil fugitif potentiel.</p>
+                        <p><span class="label">Date de naissance :</span> 14 juillet 1992</p>
+                        <p><span class="label">Dernière activité :</span> Rapport police du 05/08/2024</p>
+                        <p><span class="label">Motif principal :</span> Ivresse manifeste sur la voie publique et exhibitionnisme</p>
+                        <p><span class="label">Plaintes civiles :</span> 1 plainte pour outrage public à la pudeur</p>
+                        <p><span class="label">Note de sûreté :</span> Sujet appréhendé en état d'ébriété avancé tentant d'exposer ses parties génitales aux passants. Risque de récidive élevé en milieu festif.</p>
                     </div>
-                </div>
-            `;
+                </div>`;
         }
-        if (isThomas) {
+        else if (isThomas) {
             warning.style.display = 'block';
             resultArea.innerHTML = `
                 <div class="criminal-record">
-                    <div class="record-header">DOSSIER CRIMINEL : SALOMÉ RIVIÈRE</div>
+                    <div class="record-header">DOSSIER CRIMINEL : THOMAS REED</div>
                     <div class="record-body">
-                        <p><span class="label">Date de naissance :</span> 26 mars 1981</p>
-                        <p><span class="label">Dernière activité :</span> Rapport police du 13/12/2018</p>
-                        <p><span class="label">Motif principal :</span> Exercice illégal de la médecine</p>
-                        <p><span class="label">Plaintes civiles :</span> 3 signalements pour abus de confiance</p>
-                        <p><span class="label">Note de sûreté :</span> Impliquée dans un système d'arnaque pyramidale à grande échelle (Type Ponzi). Profil fugitif potentiel.</p>
+                        <p><span class="label">Date de naissance :</span> 05 novembre 1975</p>
+                        <p><span class="label">Dernière activité :</span> Condamnation Tribunal (2019)</p>
+                        <p><span class="label">Motif principal :</span> Escroquerie et usurpation du titre d'avocat</p>
+                        <p><span class="label">Plaintes civiles :</span> 12 victimes pour captation d'honoraires illégaux</p>
+                        <p><span class="label">Note de sûreté :</span> Individu très persuasif. S'est fait passer pour un expert juridique sans diplôme. Nota bene : Le sujet ne possède aucun lien avec la filière agricole ou fruitière.</p>
                     </div>
-                </div>
-            `;
-        }
+                </div>`;
+        } 
         else {
-            warning.style.display = 'none';
             resultArea.innerHTML = `
                 <div class="no-result">
                     <i class="fas fa-search-minus"></i> Aucun casier trouvé pour ce nom dans la base de données INTERPOL.
-                </div>
-            `;
+                </div>`;
         }
     }
 </script>
