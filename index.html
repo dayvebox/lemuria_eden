@@ -73,6 +73,31 @@
             font-weight: bold;
         }
 
+        /* Style pour le nouveau bouton */
+        .solve-btn {
+            margin-top: 10px;
+            padding: 8px 15px;
+            background-color: transparent;
+            border: 1px solid var(--accent-color);
+            color: var(--accent-color);
+            font-family: inherit;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .solve-btn:hover {
+            background-color: var(--accent-color);
+            color: #000;
+        }
+
         .main-content {
             width: 90%;
             max-width: 1000px;
@@ -158,6 +183,9 @@
         <div class="info-group">
             <label>Statut</label>
             <span class="status-unresolved">Non résolu</span>
+            <button class="solve-btn" onclick="alert('Redirection vers le formulaire de conclusion...')">
+                <i class="fas fa-key"></i> Résoudre l'enquête
+            </button>
         </div>
     </div>
 
