@@ -45,14 +45,11 @@
             background-color: var(--panel-color);
             color: var(--text-primary);
             border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display: flex; align-items: center; justify-content: center;
             text-decoration: none;
             border: 1px solid var(--border-color);
             transition: 0.3s;
         }
-
         .home-btn:hover { background-color: var(--accent-color); color: #000; }
 
         .container {
@@ -118,7 +115,6 @@
             transition: 0.3s;
             margin-top: 20px;
         }
-
         .btn-validate:hover { background: var(--accent-color); color: #000; }
 
         #result-msg {
@@ -218,22 +214,22 @@
         const q3 = document.getElementById('q3').value;
         const result = document.getElementById('result-msg');
 
-        // Reset display
+        // Réinitialisation de l'affichage
         result.style.display = 'none';
         result.className = '';
 
-        // Vérification des réponses
+        // Définition des bonnes réponses
         const isVictimCorrect = (q1 === "ethan");
         const isSecretCorrect = (q2 === "correct");
         const isCulpritCorrect = (q3 === "alexandre");
 
         if (isVictimCorrect && isSecretCorrect && isCulpritCorrect) {
+            // --- ACTION CRUCIALE : On enregistre la réussite dans le navigateur ---
+            localStorage.setItem('caseSolved', 'true');
+
             result.innerHTML = '<i class="fas fa-trophy"></i> Bravo, vous avez résolu l\'enquête du Lémuria Eden. La police procède à l\'arrestation du coupable.';
             result.classList.add('msg-success');
             result.style.display = 'block';
-            localStorage.setItem('caseSolved', 'true'); 
-    
-}
         } else {
             result.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Les preuves ne concordent pas. Vos conclusions sont rejetées. Veuillez réessayer.';
             result.classList.add('msg-error');
