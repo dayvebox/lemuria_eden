@@ -6,29 +6,30 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
 		.home-btn {
-    position: fixed; /* Reste en place au scroll */
-    top: 20px;
-    left: 20px;
-    width: 50px;
-    height: 50px;
-    background-color: #1e293b; /* Couleur sombre pro */
-    color: #f1f5f9;
-    border-radius: 50%; /* Bouton rond */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-decoration: none;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.4);
-    z-index: 9999; /* Toujours au premier plan */
-    border: 1px solid #334155;
-    transition: all 0.3s ease;
-}
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 50px;
+            height: 50px;
+            background-color: #1e293b;
+            color: #f1f5f9;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            z-index: 9999;
+            border: 1px solid #334155;
+            transition: all 0.3s ease;
+        }
 
-.home-btn:hover {
-    background-color: #38bdf8; /* Devient bleu au survol */
-    color: #0f172a;
-    transform: scale(1.1);
-}
+        .home-btn:hover {
+            background-color: #38bdf8;
+            color: #0f172a;
+            transform: scale(1.1);
+        }
+
         :root {
             --hacker-green: #00ff41;
             --hacker-dark: #0a0a0a;
@@ -64,7 +65,6 @@
 
         @keyframes blink { 50% { opacity: 0; } }
 
-        /* --- FORMULAIRE --- */
         #login-area {
             display: none;
             margin-top: 20px;
@@ -115,7 +115,6 @@
             font-weight: bold;
         }
 
-        /* --- LISTE AUDIO --- */
         #audio-vault {
             display: none;
             margin-top: 30px;
@@ -161,4 +160,87 @@
     </div>
 
     <div id="audio-vault">
-        <h2 style="border-
+        <h2 style="border-bottom: 2px solid var(--hacker-green); padding-bottom: 10px;">UNITÉ USB DÉCRYPTÉE : Ethan_Private_Logs</h2>
+        
+        <div class="audio-item"><span><i class="fas fa-file-audio"></i> audio1.mp3</span><audio controls src="assets/audio1.mp3"></audio></div>
+        <div class="audio-item"><span><i class="fas fa-file-audio"></i> audio2.mp3</span><audio controls src="assets/audio2.mp3"></audio></div>
+        <div class="audio-item"><span><i class="fas fa-file-audio"></i> audio3.mp3</span><audio controls src="assets/audio3.mp3"></audio></div>
+        <div class="audio-item"><span><i class="fas fa-file-audio"></i> audio4.mp3</span><audio controls src="assets/audio4.mp3"></audio></div>
+		<div class="audio-item"><span><i class="fas fa-file-audio"></i> audio5.mp3</span><audio controls src="assets/audio5.mp3"></audio></div>
+		<div class="audio-item"><span><i class="fas fa-file-audio"></i> audio6.mp3</span><audio controls src="assets/audio6.mp3"></audio></div>
+    </div>
+</div>
+
+<script>
+    const textLines = [
+        "SYSTEME DE SÉCURITÉ : \"<span style='color: white;'>Data Secure United</span>\" DÉTECTÉ",
+        "--------------------------------------------------------------------------------",
+        "> NOTE PERSONNELLE : \"LE SYSTEME DE SECURITE FAIT VARIER LA FIN DE MES MOTS DE PASSE\"",
+        "> PSEUDONYME : _ _ _ _ _ _ _ _ _",
+        "> MOT DE PASSE : _ _ _ _ _ _ _ _ _ _ _ _ _ _",
+        " "
+    ];
+
+    const typewriter = document.getElementById('typewriter');
+    let lineIndex = 0;
+    let charIndex = 0;
+    let currentBuffer = ""; // Stocke tout ce qui a été "tapé" pour éviter les bugs HTML
+
+    function type() {
+        if (lineIndex < textLines.length) {
+            let currentLine = textLines[lineIndex];
+            
+            if (charIndex < currentLine.length) {
+                // Si on rencontre une balise HTML, on l'ajoute en entier au buffer d'un coup
+                if (currentLine.charAt(charIndex) === '<') {
+                    let tagEnd = currentLine.indexOf('>', charIndex);
+                    if (tagEnd !== -1) {
+                        currentBuffer += currentLine.substring(charIndex, tagEnd + 1);
+                        charIndex = tagEnd + 1;
+                        // On continue immédiatement pour ne pas avoir de pause vide
+                        type(); 
+                        return;
+                    }
+                }
+                
+                // Sinon, on ajoute le caractère normal au buffer
+                currentBuffer += currentLine.charAt(charIndex);
+                charIndex++;
+                
+                // On met à jour l'écran avec tout le contenu du buffer
+                typewriter.innerHTML = currentBuffer;
+                setTimeout(type, 2); 
+            } else {
+                currentBuffer += "<br>";
+                typewriter.innerHTML = currentBuffer;
+                lineIndex++;
+                charIndex = 0;
+                setTimeout(type, 10); 
+            }
+        } else {
+            document.getElementById('main-cursor').style.display = 'none';
+            document.getElementById('login-area').style.display = 'block';
+        }
+    }
+
+    window.onload = type;
+
+    function verifyAccess() {
+        const login = document.getElementById('loginInput').value.trim().toUpperCase();
+        const pass = document.getElementById('passInput').value.trim().toUpperCase();
+        const error = document.getElementById('error-msg');
+
+        if (login === "TRUEETHAN" && pass === "EM789456DASEUN") {
+            document.getElementById('login-area').style.display = 'none';
+            document.getElementById('audio-vault').style.display = 'block';
+            window.scrollTo(0, document.body.scrollHeight);
+        } else {
+            error.style.display = 'block';
+            document.getElementById('login-area').style.transform = 'translateX(10px)';
+            setTimeout(() => document.getElementById('login-area').style.transform = 'translateX(0)', 100);
+        }
+    }
+</script>
+
+</body>
+</html>
