@@ -49,9 +49,11 @@
             text-align: center;
             border-bottom: 2px solid var(--accent);
             z-index: 10;
+            font-weight: 800;
+            letter-spacing: 2px;
         }
 
-        /* --- ÉCRAN 1 : AUTHENTIFICATION (DEUX COLONNES) --- */
+        /* --- ÉCRAN 1 : CHOIX (DEUX COLONNES) --- */
         #auth-screen {
             flex: 1;
             display: flex;
@@ -111,7 +113,7 @@
         }
         .btn:hover { background: var(--accent); color: #000; }
 
-        /* --- ÉCRAN 2 : TRACKING BATEAU (RESTE INCHANGÉ) --- */
+        /* --- ÉCRAN 2 : TRACKING NAVIRE --- */
         #map-screen {
             display: none;
             flex: 1;
@@ -124,7 +126,7 @@
             padding: 20px;
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 12px;
         }
 
         .log-btn {
@@ -135,8 +137,11 @@
             text-align: left;
             cursor: pointer;
             font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            transition: 0.2s;
         }
-        .log-btn.active { background: var(--accent); color: #000; }
+        .log-btn:hover { border-color: var(--accent); }
+        .log-btn.active { background: var(--accent); color: #000; font-weight: bold; }
 
         .map-area {
             position: relative;
@@ -145,14 +150,14 @@
                               linear-gradient(90deg, rgba(0,212,255,0.05) 1px, transparent 1px);
             background-size: 40px 40px;
             overflow: hidden;
+            display: flex; align-items: center; justify-content: center;
         }
 
         .island-img {
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            width: 80%;
+            max-width: 90%;
+            max-height: 90%;
             opacity: 0.7;
+            pointer-events: none;
         }
 
         #boat {
@@ -160,7 +165,8 @@
             width: 40px;
             z-index: 100;
             display: none;
-            transition: all 0.7s ease-in-out;
+            transition: all 0.8s ease-in-out; /* Animation fluide */
+            pointer-events: none;
         }
 
         /* --- ÉCRAN 3 : CARTE INTERACTIVE DES DISTANCES --- */
@@ -173,19 +179,18 @@
                 linear-gradient(rgba(0,212,255,0.05) 2px, transparent 2px), 
                 linear-gradient(90deg, rgba(0,212,255,0.05) 2px, transparent 2px);
             background-size: 100% 100%, 40px 40px, 40px 40px;
-            touch-action: none;
+            touch-action: none; /* Désactive le scroll mobile pendant le tracé */
         }
 
         .island { position: absolute; z-index: 10; cursor: pointer; transform: translate(-50%, -50%); text-align: center; }
-        .island svg { fill: rgba(0, 212, 255, 0.15); stroke: var(--accent); stroke-width: 1.2; transition: 0.3s; }
+        .island svg { fill: rgba(0, 212, 255, 0.1); stroke: var(--accent); stroke-width: 1.2; transition: 0.3s; }
         .island.active svg { fill: rgba(0, 212, 255, 0.5); transform: scale(1.1); }
-        
-        .label-mahe { font-size: 0.75rem; color: #fff; background: rgba(0,0,0,0.8); padding: 2px 8px; border-radius: 4px; margin-top: 5px; white-space: nowrap; border: 1px solid var(--accent); }
+        .label-mahe { font-size: 0.75rem; color: #fff; background: rgba(0,0,0,0.8); padding: 2px 8px; border-radius: 4px; margin-top: 5px; white-space: nowrap; border: 1px solid var(--accent); pointer-events: none; }
 
         #distance-hud {
             position: absolute; bottom: 30px; right: 30px;
             background: rgba(0, 0, 0, 0.9); border: 1px solid var(--accent);
-            padding: 15px; min-width: 200px; border-radius: 4px; z-index: 20;
+            padding: 15px; min-width: 200px; border-radius: 4px; z-index: 20; pointer-events: none;
         }
 
         .hud-val { font-size: 1.8rem; font-weight: bold; color: #fff; font-family: monospace; }
@@ -193,9 +198,11 @@
 
         canvas#lineCanvas { position: absolute; top: 0; left: 0; pointer-events: none; z-index: 5; }
 
-        @media (max-width: 600px) {
+        @media (max-width: 768px) {
             .auth-layout { grid-template-columns: 1fr; }
             .auth-divider { height: 1px; width: 100%; }
+            #map-screen { grid-template-columns: 1fr; }
+            .sidebar { order: 2; height: auto; }
         }
     </style>
 </head>
@@ -203,7 +210,7 @@
 
 <a href="index.html" class="home-btn"><i class="fas fa-home"></i></a>
 
-<header id="main-header">VTS ALDABRA : TRACKING SYSTEM</header>
+<header>VTS ALDABRA : TRACKING SYSTEM</header>
 
 <div id="auth-screen">
     <div class="auth-card">
@@ -227,16 +234,18 @@
 
 <div id="map-screen">
     <div class="sidebar">
-        <h3 style="font-size: 0.9rem; margin-bottom: 20px; color: var(--accent);">LOGS RÉCENTS : ID 356</h3>
+        <h3 style="font-size: 0.8rem; color: var(--accent); margin-bottom: 10px; border-bottom: 1px solid #30363d; padding-bottom: 10px;">ID 356 : HISTORIQUE GPS</h3>
         <button class="log-btn" onclick="runAnimation(this)">21/09 - 06:01:14</button>
         <button class="log-btn" onclick="runAnimation(this)">22/09 - 05:58:42</button>
         <button class="log-btn" onclick="runAnimation(this)">23/09 - 06:02:10</button>
         <button class="log-btn" onclick="runAnimation(this)">24/09 - 05:59:05</button>
-        <div style="margin-top: auto; font-size: 0.7rem; color: #444;"><i class="fas fa-satellite"></i> Liaison satellite active</div>
+        <div style="margin-top: auto; font-size: 0.65rem; color: #444; border-top: 1px solid #30363d; padding-top: 10px;">
+            <i class="fas fa-satellite"></i> Liaison satellite active
+        </div>
     </div>
     <div class="map-area">
         <img src="assets/carte.png" class="island-img" alt="Carte">
-        <img id="boat" src="assets/bateau.png" alt="Navire">
+        <img id="boat" src="assets/bateau.png" alt="Bateau">
     </div>
 </div>
 
@@ -256,22 +265,30 @@
         <div class="label-mahe">Mahé - Capitale des Seychelles</div>
     </div>
 
-    <div class="island" id="silhouette" style="left: 77%; top: 22%;">
-        <svg width="30" height="30" viewBox="0 0 30 30"><path d="M15,2 L28,15 L22,28 L8,28 L2,15 Z" /></svg>
+    <div class="island" id="silhouette" style="left: 77%; top: 23%;">
+        <svg width="35" height="35" viewBox="0 0 30 30"><path d="M15,2 L28,15 L22,28 L8,28 L2,15 Z" /></svg>
     </div>
 
-    <div class="island" id="desroches" style="left: 65%; top: 45%;">
-        <svg width="50" height="15" viewBox="0 0 50 15"><ellipse cx="25" cy="7.5" rx="23" ry="5" /></svg>
+    <div class="island" id="bird" style="left: 80%; top: 10%;">
+        <svg width="18" height="18" viewBox="0 0 20 20"><circle cx="10" cy="10" r="9" /></svg>
+    </div>
+
+    <div class="island" id="coetivy" style="left: 90%; top: 60%;">
+        <svg width="20" height="70" viewBox="0 0 15 60"><ellipse cx="7.5" cy="30" rx="6" ry="28" /></svg>
     </div>
 
     <div class="island" id="alphonse" style="left: 55%; top: 60%;">
-        <svg width="25" height="25" viewBox="0 0 30 30"><circle cx="15" cy="15" r="10" /><circle cx="15" cy="15" r="3" fill="#00d4ff"/></svg>
+        <svg width="28" height="28" viewBox="0 0 30 30"><circle cx="15" cy="15" r="13" /><circle cx="15" cy="15" r="3" fill="#00d4ff"/></svg>
+    </div>
+
+    <div class="island" id="astove" style="left: 20%; top: 90%;">
+        <svg width="30" height="25" viewBox="0 0 30 25"><path d="M5,5 Q15,0 25,5 Q30,15 20,20 Q10,25 5,15 Z" /></svg>
     </div>
 
     <div id="distance-hud">
-        <div class="hud-label">Vecteur Balistique</div>
+        <div class="hud-label">LOGISTIQUE DE NAVIGATION</div>
         <div id="dist-display" class="hud-val">0 km</div>
-        <div id="path-display" style="font-size: 0.65rem; color: #888;">Maintenez et glissez...</div>
+        <div id="path-display" style="font-size: 0.65rem; color: #888;">Maintenez et reliez deux points.</div>
     </div>
 </div>
 
@@ -285,25 +302,23 @@
     let currentMousePos = { x: 0, y: 0 };
     let endPoint = null;
 
-    // --- LOGIQUE AUTH & NAVIGATION ---
+    // --- NAVIGATION ---
     function handleEnter(e) { if (e.key === 'Enter') verifyID(); }
-
     function verifyID() {
         if (document.getElementById('boatID').value.trim() === "356") {
             document.getElementById('auth-screen').style.display = 'none';
             document.getElementById('map-screen').style.display = 'grid';
         } else {
-            alert("ID Inconnu.");
+            alert("Accès refusé : ID Navire non reconnu.");
         }
     }
-
     function showInteractiveMap() {
         document.getElementById('auth-screen').style.display = 'none';
         interactiveMap.style.display = 'flex';
         resize();
     }
 
-    // --- LOGIQUE ANIMATION BATEAU (SANS ROTATION) ---
+    // --- LOGIQUE TRACKING BATEAU (SANS ROTATION) ---
     const grid = { "A1": {x:58, y:55}, "C1": {x:66, y:55}, "C3": {x:66, y:73}, "B2": {x:62, y:65}, "A3": {x:58, y:73}, "A1_FIN": {x:58, y:55} };
     const path = ["A1", "C1", "C3", "B2", "A3", "A1_FIN"];
 
@@ -315,8 +330,8 @@
         for (let step of path) {
             boat.style.left = grid[step].x + "%";
             boat.style.top = grid[step].y + "%";
-            boat.style.transform = `translate(-50%, -50%)`; // Pas de rotate()
-            await new Promise(r => setTimeout(resolve, 800));
+            boat.style.transform = `translate(-50%, -50%) rotate(0deg)`; // Reste droit
+            await new Promise(resolve => setTimeout(resolve, 800));
         }
     }
 
@@ -338,8 +353,14 @@
         const island = e.target.closest('.island');
         if (island) {
             isDrawing = true;
+            const containerRect = interactiveMap.getBoundingClientRect();
             const rect = island.getBoundingClientRect();
-            startPoint = { id: island.id, x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
+            // On calcule le centre EXACT de l'île par rapport au conteneur de la carte
+            startPoint = { 
+                id: island.id, 
+                x: rect.left + rect.width / 2 - containerRect.left, 
+                y: rect.top + rect.height / 2 - containerRect.top 
+            };
             island.classList.add('active');
             endPoint = null;
         }
@@ -347,7 +368,12 @@
 
     function moveTrace(e) {
         if (!isDrawing) return;
-        currentMousePos = { x: e.clientX, y: e.clientY };
+        const containerRect = interactiveMap.getBoundingClientRect();
+        // Coordonnées souris relatives au conteneur
+        currentMousePos = { 
+            x: e.clientX - containerRect.left, 
+            y: e.clientY - containerRect.top 
+        };
         draw();
     }
 
@@ -355,39 +381,60 @@
         if (!isDrawing) return;
         isDrawing = false;
         document.querySelectorAll('.island').forEach(isl => isl.classList.remove('active'));
-        const element = document.elementFromPoint(currentMousePos.x, currentMousePos.y);
+        
+        // Trouver l'élément sous la souris à la fin du tracé
+        const element = document.elementFromPoint(
+            currentMousePos.x + interactiveMap.getBoundingClientRect().left, 
+            currentMousePos.y + interactiveMap.getBoundingClientRect().top
+        );
         const island = element ? element.closest('.island') : null;
 
         if (island && island.id !== startPoint.id) {
+            const containerRect = interactiveMap.getBoundingClientRect();
             const rect = island.getBoundingClientRect();
-            endPoint = { id: island.id, x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
+            // Centre exact de l'île de fin
+            endPoint = { 
+                id: island.id, 
+                x: rect.left + rect.width / 2 - containerRect.left, 
+                y: rect.top + rect.height / 2 - containerRect.top 
+            };
             calculateDistance();
+        } else {
+            startPoint = null; // Tracé invalide
         }
         draw();
     }
 
     function calculateDistance() {
+        // VERROU : Mahé ↔ Aldabra = 1150 km
         const isRef = (startPoint.id === 'mahe' && endPoint.id === 'aldabra') || (startPoint.id === 'aldabra' && endPoint.id === 'mahe');
+        
         if (isRef) {
             document.getElementById('dist-display').innerText = "1150 km";
-            document.getElementById('path-display').innerText = "RÉFÉRENCE : Aldabra / Mahé";
+            document.getElementById('path-display').innerText = "VECTEUR ÉTALONNÉ : Aldabra / Mahé";
         } else {
+            // Calcul proportionnel basé sur la référence Mahé-Aldabra
             const pA = document.getElementById('aldabra').getBoundingClientRect();
             const pM = document.getElementById('mahe').getBoundingClientRect();
+            const containerRect = interactiveMap.getBoundingClientRect();
+            
             const pxRef = Math.sqrt(Math.pow(pM.left - pA.left, 2) + Math.pow(pM.top - pA.top, 2));
             const pxTarget = Math.sqrt(Math.pow(endPoint.x - startPoint.x, 2) + Math.pow(endPoint.y - startPoint.y, 2));
+            
             const realKm = Math.round(pxTarget * (1150 / pxRef));
             document.getElementById('dist-display').innerText = realKm + " km";
-            document.getElementById('path-display').innerText = "Distance par triangulation.";
+            document.getElementById('path-display').innerText = "Distance par triangulation satellite.";
         }
     }
 
     function draw() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         if (isDrawing && startPoint) {
+            // Ligne de tracé active (pointillés bleu)
             ctx.beginPath(); ctx.strokeStyle = '#00d4ff'; ctx.lineWidth = 2; ctx.setLineDash([5, 5]);
             ctx.moveTo(startPoint.x, startPoint.y); ctx.lineTo(currentMousePos.x, currentMousePos.y); ctx.stroke();
         } else if (startPoint && endPoint) {
+            // Ligne finale validée (pleine blanche, lueur bleue)
             ctx.beginPath(); ctx.strokeStyle = '#fff'; ctx.lineWidth = 3; ctx.setLineDash([]);
             ctx.shadowBlur = 15; ctx.shadowColor = "#00d4ff";
             ctx.moveTo(startPoint.x, startPoint.y); ctx.lineTo(endPoint.x, endPoint.y); ctx.stroke();
