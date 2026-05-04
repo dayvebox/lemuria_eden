@@ -79,7 +79,7 @@
 
         .auth-layout {
             display: grid;
-            grid-template-columns: 1fr 1px 1fr; /* Deux colonnes + séparateur */
+            grid-template-columns: 1fr 1px 1fr;
             gap: 40px;
             align-items: center;
             margin-top: 30px;
@@ -218,7 +218,6 @@
             transition: all 0.7s ease-in-out;
         }
 
-        /* Responsive simple */
         @media (max-width: 600px) {
             .auth-layout { grid-template-columns: 1fr; }
             .auth-divider { height: 1px; }
@@ -284,7 +283,6 @@
 </div>
 
 <script>
-    // GESTION DE LA CARTE GLOBALE
     function openGlobalMap() {
         document.getElementById('global-map-overlay').style.display = 'flex';
     }
@@ -293,7 +291,6 @@
         document.getElementById('global-map-overlay').style.display = 'none';
     }
 
-    // GESTION DE LA CONNEXION (LOGIQUE ORIGINALE PRÉSERVÉE)
     function handleEnter(e) {
         if (e.key === 'Enter') verifyID();
     }
@@ -309,14 +306,13 @@
         }
     }
 
-    // GESTION DE L'ANIMATION (LOGIQUE ORIGINALE PRÉSERVÉE)
     const grid = {
-        "A1": { x: 58, y: 55, r: 90 },
-        "C1": { x: 66, y: 55, r: 180 },
-        "C3": { x: 66, y: 73, r: 270 },
-        "B2": { x: 62, y: 65, r: 315 },
-        "A3": { x: 58, y: 73, r: 0 },
-        "A1_FIN": { x: 58, y: 55, r: 0 }
+        "A1": { x: 58, y: 55 },
+        "C1": { x: 66, y: 55 },
+        "C3": { x: 66, y: 73 },
+        "B2": { x: 62, y: 65 },
+        "A3": { x: 58, y: 73 },
+        "A1_FIN": { x: 58, y: 55 }
     };
 
     const path = ["A1", "C1", "C3", "B2", "A3", "A1_FIN"];
@@ -332,8 +328,8 @@
             const pos = grid[step];
             boat.style.left = pos.x + "%";
             boat.style.top = pos.y + "%";
-            // Note : Ton code original utilisait pos.rot, j'ai corrigé selon tes variables d'objet (pos.r)
-            boat.style.transform = `translate(-50%, -50%) rotate(${pos.r}deg)`;
+            // CORRECTION : On garde translate pour le centrage, mais on supprime rotate()
+            boat.style.transform = `translate(-50%, -50%)`;
             await new Promise(resolve => setTimeout(resolve, 800));
         }
     }
