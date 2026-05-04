@@ -69,19 +69,12 @@
         }
 
         /* --- ÉTATS DU STATUT --- */
-        .status-unresolved {
-            color: #f56565;
-            font-weight: bold;
-        }
-        
-        /* Nouvelle classe pour le vert */
-        .status-resolved {
-            color: #48bb78;
-            font-weight: bold;
-        }
+        .status-unresolved { color: #f56565; font-weight: bold; }
+        .status-resolved { color: #48bb78; font-weight: bold; }
+
+        .btn-group { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
 
         .solve-btn {
-            margin-top: 10px;
             padding: 8px 15px;
             background-color: transparent;
             border: 1px solid var(--accent-color);
@@ -96,18 +89,22 @@
             transition: all 0.2s ease;
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: 8px;
         }
 
-        .solve-btn:hover {
-            background-color: var(--accent-color);
-            color: #000;
-        }
+        .solve-btn:hover { background-color: var(--accent-color); color: #000; }
 
-        .main-content {
-            width: 90%;
-            max-width: 1000px;
+        /* Bouton Recommencer */
+        .reset-btn {
+            border-color: #4a5568;
+            color: #4a5568;
+            font-size: 0.7rem;
+            display: none; /* Caché par défaut */
         }
+        .reset-btn:hover { background-color: #4a5568; color: white; }
+
+        .main-content { width: 90%; max-width: 1000px; }
 
         h2 {
             font-size: 1.1rem;
@@ -137,34 +134,13 @@
             transition: all 0.2s ease;
         }
 
-        .card:hover {
-            border-color: var(--accent-color);
-            background: #252833;
-            transform: scale(1.02);
-        }
+        .card:hover { border-color: var(--accent-color); background: #252833; transform: scale(1.02); }
+        .card i { font-size: 1.2rem; margin-right: 15px; color: var(--accent-color); width: 25px; text-align: center; }
 
-        .card i {
-            font-size: 1.2rem;
-            margin-right: 15px;
-            color: var(--accent-color);
-            width: 25px;
-            text-align: center;
-        }
+        .card-resource { background: #11141d; }
+        .card-resource i { color: #a0aec0; }
 
-        .card-resource {
-            background: #11141d;
-        }
-
-        .card-resource i {
-            color: #a0aec0;
-        }
-
-        footer {
-            margin: 60px 0 30px 0;
-            color: var(--text-secondary);
-            font-size: 0.8rem;
-            text-align: center;
-        }
+        footer { margin: 60px 0 30px 0; color: var(--text-secondary); font-size: 0.8rem; text-align: center; }
     </style>
 </head>
 <body>
@@ -190,14 +166,19 @@
             <label>Statut</label>
             <span id="case-status" class="status-unresolved">Non résolu</span>
             
-            <button id="solve-btn" class="solve-btn" onclick="window.location.href='conclusion.html'">
-                <i class="fas fa-key"></i> Résoudre l'enquête
-            </button>
+            <div class="btn-group">
+                <button id="solve-btn" class="solve-btn" onclick="window.location.href='conclusion.html'">
+                    <i class="fas fa-key"></i> Résoudre l'enquête
+                </button>
+                
+                <button id="reset-btn" class="solve-btn reset-btn" onclick="resetEnquete()">
+                    <i class="fas fa-redo"></i> Recommencer l'enquête
+                </button>
+            </div>
         </div>
     </div>
 
     <div class="main-content">
-        
         <h2>Déverrouiller une enveloppe</h2>
         <div class="grid-container">
             <a href="reception.html" class="card"><i class="fas fa-desktop"></i> PC de la réception</a>
@@ -215,34 +196,36 @@
             <a href="usb.html" class="card card-resource"><i class="fas fa-usb"></i> Clé USB trouvée devant l'abri</a>
             <a href="helico.html" class="card card-resource"><i class="fas fa-helicopter"></i> Registres des vols hélicoptère</a>
         </div>
-
     </div>
 
-    <footer>
-        Système sécurisé 55 INVESTIGATIONS - Agent en service
-    </footer>
+    <footer>Système sécurisé 55 INVESTIGATIONS - Agent en service</footer>
 
     <script>
-        // Ce script s'exécute au chargement de la page
+        // Vérification au chargement
         window.onload = function() {
-            // On vérifie si la variable 'caseSolved' existe dans la mémoire du navigateur
             if (localStorage.getItem('caseSolved') === 'true') {
-                const statusLabel = document.getElementById('case-status');
+                document.getElementById('case-status').innerText = "Résolu";
+                document.getElementById('case-status').className = "status-resolved";
+                
                 const solveBtn = document.getElementById('solve-btn');
-                
-                // On change le texte et la couleur
-                statusLabel.innerText = "Résolu";
-                statusLabel.className = "status-resolved";
-                
-                // Optionnel : On peut cacher le bouton de résolution puisque c'est fini
-                // ou changer son icône/texte
                 solveBtn.innerHTML = '<i class="fas fa-check-double"></i> Enquête close';
                 solveBtn.style.borderColor = "#48bb78";
                 solveBtn.style.color = "#48bb78";
-                solveBtn.onclick = null; // Désactive le clic
+                solveBtn.onclick = null;
                 solveBtn.style.cursor = "default";
+
+                // On affiche le bouton reset uniquement si résolu
+                document.getElementById('reset-btn').style.display = "inline-flex";
             }
         };
+
+        // FONCTION POUR RECOMMENCER
+        function resetEnquete() {
+            if (confirm("Voulez-vous vraiment réinitialiser le statut de l'enquête ?")) {
+                localStorage.removeItem('caseSolved');
+                location.reload(); // Recharge la page pour remettre à jour l'UI
+            }
+        }
     </script>
 
 </body>
