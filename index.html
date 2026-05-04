@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>55 Investigations - Dossier DC8</title>
+    <title>55 Investigations - Conclusion de l'Affaire</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
@@ -13,6 +13,8 @@
             --text-primary: #ffffff;
             --text-secondary: #94a3b8;
             --border-color: #2d3748;
+            --success-color: #238636;
+            --error-color: #da3633;
         }
 
         body {
@@ -20,10 +22,10 @@
             color: var(--text-primary);
             font-family: 'Inter', -apple-system, sans-serif;
             margin: 0;
-            padding: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
+            min-height: 100vh;
         }
 
         header {
@@ -31,219 +33,210 @@
             background-color: #000;
             padding: 15px 0;
             text-align: center;
-            border-bottom: 1px solid var(--border-color);
+            border-bottom: 2px solid var(--accent-color);
+            position: relative;
         }
 
-        .logo-55 {
-            font-weight: 800;
-            letter-spacing: 3px;
-            font-size: 1.2rem;
+        .home-btn {
+            position: absolute;
+            left: 20px; top: 50%;
+            transform: translateY(-50%);
+            width: 45px; height: 45px;
+            background-color: var(--panel-color);
             color: var(--text-primary);
-        }
-
-        .case-header {
-            width: 90%;
-            max-width: 1000px;
-            background: var(--panel-color);
-            margin: 30px 0;
-            padding: 25px;
-            border-radius: 8px;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 20px;
-            border: 1px solid var(--border-color);
-        }
-
-        .info-group label {
-            display: block;
-            color: var(--text-secondary);
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            margin-bottom: 5px;
-            letter-spacing: 1px;
-        }
-
-        .info-group span {
-            font-weight: 600;
-            font-size: 1rem;
-        }
-
-        /* --- ÉTATS DU STATUT --- */
-        .status-unresolved {
-            color: #f56565;
-            font-weight: bold;
-        }
-        
-        /* Nouvelle classe pour le vert */
-        .status-resolved {
-            color: #48bb78;
-            font-weight: bold;
-        }
-
-        .solve-btn {
-            margin-top: 10px;
-            padding: 8px 15px;
-            background-color: transparent;
-            border: 1px solid var(--accent-color);
-            color: var(--accent-color);
-            font-family: inherit;
-            font-size: 0.8rem;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .solve-btn:hover {
-            background-color: var(--accent-color);
-            color: #000;
-        }
-
-        .main-content {
-            width: 90%;
-            max-width: 1000px;
-        }
-
-        h2 {
-            font-size: 1.1rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin: 40px 0 20px 0;
-            color: var(--accent-color);
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 10px;
-        }
-
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 15px;
-        }
-
-        .card {
-            background: var(--panel-color);
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            padding: 20px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
             text-decoration: none;
-            color: var(--text-primary);
-            display: flex;
-            align-items: center;
-            transition: all 0.2s ease;
+            border: 1px solid var(--border-color);
+            transition: 0.3s;
+        }
+        .home-btn:hover { background-color: var(--accent-color); color: #000; }
+
+        .container {
+            margin: 40px 0;
+            background: var(--panel-color);
+            padding: 40px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            max-width: 650px;
+            width: 90%;
+            box-shadow: 0 0 30px rgba(0,0,0,0.5);
         }
 
-        .card:hover {
-            border-color: var(--accent-color);
-            background: #252833;
-            transform: scale(1.02);
-        }
-
-        .card i {
-            font-size: 1.2rem;
-            margin-right: 15px;
+        h1 {
             color: var(--accent-color);
-            width: 25px;
             text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-size: 1.4rem;
+            margin-bottom: 30px;
         }
 
-        .card-resource {
-            background: #11141d;
+        .question-block {
+            margin-bottom: 30px;
+            border-left: 3px solid var(--accent-color);
+            padding-left: 20px;
         }
 
-        .card-resource i {
-            color: #a0aec0;
-        }
-
-        footer {
-            margin: 60px 0 30px 0;
+        label {
+            display: block;
+            margin-bottom: 12px;
+            font-weight: bold;
+            font-size: 0.95rem;
             color: var(--text-secondary);
-            font-size: 0.8rem;
-            text-align: center;
         }
+
+        select {
+            width: 100%;
+            padding: 12px;
+            background: #0d1117;
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 1rem;
+            cursor: pointer;
+            outline: none;
+        }
+
+        select:focus { border-color: var(--accent-color); }
+
+        .btn-validate {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background: transparent;
+            border: 2px solid var(--accent-color);
+            color: var(--accent-color);
+            text-transform: uppercase;
+            font-weight: 800;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 20px;
+        }
+        .btn-validate:hover { background: var(--accent-color); color: #000; }
+
+        #result-msg {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 4px;
+            display: none;
+            text-align: center;
+            font-weight: bold;
+            line-height: 1.5;
+        }
+
+        .msg-success { background: rgba(35, 134, 54, 0.2); border: 1px solid var(--success-color); color: #7ee787; }
+        .msg-error { background: rgba(218, 54, 51, 0.2); border: 1px solid var(--error-color); color: #ffa19a; }
     </style>
 </head>
 <body>
 
-    <header>
-        <div class="logo-55">55 INVESTIGATIONS</div>
-    </header>
+<header>
+    <a href="index.html" class="home-btn"><i class="fas fa-home"></i></a>
+    <div style="font-weight: 800; letter-spacing: 2px;">55 INVESTIGATIONS - RAPPORT FINAL</div>
+</header>
 
-    <div class="case-header">
-        <div class="info-group">
-            <label>Nom de l'affaire</label>
-            <span>Dossier DC8 - Lémuria Eden</span>
-        </div>
-        <div class="info-group">
-            <label>Victime</label>
-            <span>inconnue</span>
-        </div>
-        <div class="info-group">
-            <label>Lieu</label>
-            <span>Atoll d'Aldabra, Seychelles</span>
-        </div>
-        <div class="info-group">
-            <label>Statut</label>
-            <span id="case-status" class="status-unresolved">Non résolu</span>
-            
-            <button id="solve-btn" class="solve-btn" onclick="window.location.href='conclusion.html'">
-                <i class="fas fa-key"></i> Résoudre l'enquête
-            </button>
-        </div>
+<div class="container">
+    <h1>Conclusion de l'enquête</h1>
+
+    <div class="question-block">
+        <label>1. Qui est la victime de l'incendie, retrouvée dans le sauna ?</label>
+        <select id="q1">
+            <option value="">-- Sélectionnez l'identité --</option>
+            <option value="marla">Marla Solis</option>
+            <option value="juliet">Juliet Solis</option>
+            <option value="alexandre">Alexandre Dubois</option>
+            <option value="salome">Salomé Rivière</option>
+            <option value="ethan">Ethan Moore</option>
+            <option value="mirella">Mirella Payet</option>
+            <option value="paolo">Paolo Moretti</option>
+            <option value="anselme">Anselme Razafy</option>
+            <option value="thomas">Thomas Reed</option>
+            <option value="dustin">Dustin Hale</option>
+            <option value="naomi">Naomi Ridley</option>
+            <option value="elias">Elias Kovacs</option>
+        </select>
     </div>
 
-    <div class="main-content">
-        
-        <h2>Déverrouiller une enveloppe</h2>
-        <div class="grid-container">
-            <a href="reception.html" class="card"><i class="fas fa-desktop"></i> PC de la réception</a>
-            <a href="dortoir.html" class="card"><i class="fas fa-bed"></i> Dortoir du personnel</a>
-            <a href="police.html" class="card"><i class="fa-solid fa-file"></i> Dossier de police</a>
-            <a href="abri.html" class="card"><i class="fa-solid fa-cloud"></i> Abri anti-tempête</a>
-            <a href="telephone.html" class="card"><i class="fas fa-satellite-dish"></i> Téléphone satellite</a>
-            <a href="coffre.html" class="card"><i class="fas fa-vault"></i> Coffre du directeur</a>
-        </div>
-
-        <h2>Ressources Additionnelles</h2>
-        <div class="grid-container">
-            <a href="casiers.html" class="card card-resource"><i class="fas fa-fingerprint"></i> Casiers judiciaires</a>
-            <a href="bateau.html" class="card card-resource"><i class="fas fa-map-location-dot"></i> Carte maritime</a>
-            <a href="usb.html" class="card card-resource"><i class="fas fa-usb"></i> Clé USB trouvée devant l'abri</a>
-            <a href="helico.html" class="card card-resource"><i class="fas fa-helicopter"></i> Registres des vols hélicoptère</a>
-        </div>
-
+    <div class="question-block">
+        <label>2. Quel était le secret de la victime et qui l’a révélé ?</label>
+        <select id="q2">
+            <option value="">-- Sélectionnez le mobile --</option>
+            <option value="1">Détournement de fonds caritatifs, révélé par Marla</option>
+            <option value="2">Usurpation d'identité médicale, révélé par Paolo</option>
+            <option value="3">Espionnage pour un resort concurrent, révélé par Anselme</option>
+            <option value="4">Trafic de reliques locales, révélé par Dustin</option>
+            <option value="5">Chantage sur le passé de Salomé, révélé par Naomi</option>
+            <option value="6">Blanchiment d'argent via l'héliport, révélé par Elias</option>
+            <option value="7">Liaison secrète compromettante, révélé par Mirella</option>
+            <option value="correct">Journaliste infiltré, révélé par Juliet</option>
+            <option value="9">Vol de diamants de la villa Laplaz, révélé par Thomas</option>
+            <option value="10">Vente de données confidentielles, révélé par Marla</option>
+            <option value="11">Ancien complice d'arnaque de Thomas, révélé par Paolo</option>
+            <option value="12">Hacker recherché par Interpol, révélé par Anselme</option>
+            <option value="13">Faux témoignage en cours, révélé par Dustin</option>
+            <option value="14">Sabotage du système de filtrage, révélé par Naomi</option>
+            <option value="15">Propriétaire légitime de l'atoll, révélé par Elias</option>
+            <option value="16">Agent double pour la police locale, révélé par Mirella</option>
+        </select>
     </div>
 
-    <footer>
-        Système sécurisé 55 INVESTIGATIONS - Agent en service
-    </footer>
+    <div class="question-block">
+        <label>3. S'il s'agit d'un meurtre, qui est le coupable ?</label>
+        <select id="q3">
+            <option value="">-- Sélectionnez le coupable --</option>
+            <option value="marla">Marla Solis</option>
+            <option value="juliet">Juliet Solis</option>
+            <option value="alexandre">Alexandre Dubois</option>
+            <option value="salome">Salomé Rivière</option>
+            <option value="ethan">Ethan Moore</option>
+            <option value="mirella">Mirella Payet</option>
+            <option value="paolo">Paolo Moretti</option>
+            <option value="anselme">Anselme Razafy</option>
+            <option value="thomas">Thomas Reed</option>
+            <option value="dustin">Dustin Hale</option>
+            <option value="naomi">Naomi Ridley</option>
+            <option value="elias">Elias Kovacs</option>
+        </select>
+    </div>
 
-    <script>
-        // Ce script s'exécute au chargement de la page
-        window.onload = function() {
-            // On vérifie si la variable 'caseSolved' existe dans la mémoire du navigateur
-            if (localStorage.getItem('caseSolved') === 'true') {
-                const statusLabel = document.getElementById('case-status');
-                const solveBtn = document.getElementById('solve-btn');
-                
-                // On change le texte et la couleur
-                statusLabel.innerText = "Résolu";
-                statusLabel.className = "status-resolved";
-                
-                // Optionnel : On peut cacher le bouton de résolution puisque c'est fini
-                // ou changer son icône/texte
-                solveBtn.innerHTML = '<i class="fas fa-check-double"></i> Enquête close';
-                solveBtn.style.borderColor = "#48bb78";
-                solveBtn.style.color = "#48bb78";
-                solveBtn.onclick = null; // Désactive le clic
-                solveBtn.style.cursor = "default";
-            }
-        };
-    </script>
+    <button class="btn-validate" onclick="validateCase()">Envoyer les conclusions</button>
+
+    <div id="result-msg"></div>
+</div>
+
+<script>
+    function validateCase() {
+        const q1 = document.getElementById('q1').value;
+        const q2 = document.getElementById('q2').value;
+        const q3 = document.getElementById('q3').value;
+        const result = document.getElementById('result-msg');
+
+        // Réinitialisation de l'affichage
+        result.style.display = 'none';
+        result.className = '';
+
+        // Définition des bonnes réponses
+        const isVictimCorrect = (q1 === "ethan");
+        const isSecretCorrect = (q2 === "correct");
+        const isCulpritCorrect = (q3 === "alexandre");
+
+        if (isVictimCorrect && isSecretCorrect && isCulpritCorrect) {
+            // --- ACTION CRUCIALE : On enregistre la réussite dans le navigateur ---
+            localStorage.setItem('caseSolved', 'true');
+
+            result.innerHTML = '<i class="fas fa-trophy"></i> Bravo, vous avez résolu l\'enquête du Lémuria Eden. La police procède à l\'arrestation du coupable.';
+            result.classList.add('msg-success');
+            result.style.display = 'block';
+        } else {
+            result.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Les preuves ne concordent pas. Vos conclusions sont rejetées. Veuillez réessayer.';
+            result.classList.add('msg-error');
+            result.style.display = 'block';
+        }
+    }
+</script>
 
 </body>
 </html>
