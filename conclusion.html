@@ -231,6 +231,9 @@
             result.innerHTML = '<i class="fas fa-trophy"></i> Bravo, vous avez résolu l\'enquête du Lémuria Eden. La police procède à l\'arrestation du coupable.';
             result.classList.add('msg-success');
             result.style.display = 'block';
+            localStorage.setItem('caseSolved', 'true'); 
+    
+}
         } else {
             result.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Les preuves ne concordent pas. Vos conclusions sont rejetées. Veuillez réessayer.';
             result.classList.add('msg-error');
