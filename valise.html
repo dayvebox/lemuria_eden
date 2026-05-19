@@ -231,18 +231,19 @@
             ["O", "B", "E", "G", "H", "I", "N", "S", "U", "Y"], 
             ["C", "D", "F", "N", "J", "L", "M", "P", "R", "T"], 
             ["X", "Q", "D", "F", "H", "J", "K", "M", "W", "Z"], 
+            ["A", "E", "I", "R", "U", "B", "C", "F", "G", "H"],
             ["A", "E", "I", "O", "U", "B", "C", "F", "G", "H"], 
             ["N", "P", "Q", "R", "S", "T", "V", "W", "X", "Z"]  
         ];
 
-        const targetCode = "LONDON";
+        const targetCode = "LONDRES";
         wheelsData.forEach((arr, idx) => {
             if(!arr.includes(targetCode[idx])) {
                 arr[0] = targetCode[idx];
             }
         });
 
-        let currentIndices = [0, 0, 0, 0, 0, 0];
+        let currentIndices = [0, 0, 0, 0, 0, 0, 0];
         let isLocked = true;
 
         const lockInterface = document.getElementById('lock-interface');
