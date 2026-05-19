@@ -1,1 +1,326 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>55 Investigations - Mallette de Voyage</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --bg: #0f172a;
+            --panel: #1e293b;
+            --line: #334155;
+            --text: #f1f5f9;
+            --accent: #00d4ff;
+            --success: #10b981;
+            --error: #ef4444;
+            --lock-bg: #020617;
+        }
 
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', -apple-system, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            user-select: none;
+            padding-bottom: 50px;
+        }
+
+        header {
+            width: 100%;
+            background: #020617;
+            padding: 15px 0;
+            text-align: center;
+            border-bottom: 1px solid var(--line);
+            letter-spacing: 2px;
+            font-size: 0.8rem;
+            color: var(--accent);
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        .home-btn {
+            position: fixed; top: 20px; left: 20px;
+            width: 50px; height: 50px;
+            background-color: #1e293b; color: #f1f5f9;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            text-decoration: none; box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            z-index: 9999; border: 1px solid var(--line); transition: 0.3s;
+        }
+        .home-btn:hover { background-color: var(--accent); color: #020617; transform: scale(1.1); }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 90%;
+            max-width: 800px;
+            text-align: center;
+        }
+
+        .image-wrapper {
+            width: 100%;
+            max-height: 60vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .suitcase-img {
+            max-width: 100%;
+            max-height: 55vh;
+            object-fit: contain;
+        }
+
+        .clue-label {
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        .lock-container {
+            background: linear-gradient(135deg, #334155, #1e293b);
+            padding: 20px 30px;
+            border-radius: 12px;
+            border: 4px solid #020617;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5), inset 0 1px 5px rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .wheel-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-arrow {
+            background: none;
+            border: none;
+            color: var(--accent);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 5px;
+            transition: color 0.2s, transform 0.1s;
+        }
+        .nav-arrow:hover { color: #ffffff; transform: scale(1.2); }
+        .nav-arrow:active { transform: scale(0.9); }
+
+        .wheel-window {
+            width: 45px;
+            height: 50px;
+            background: var(--lock-bg);
+            border-radius: 6px;
+            border: 2px solid var(--line);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: inset 0 3px 10px rgba(0,0,0,0.8);
+        }
+
+        .wheel-text {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #fbbf24;
+            font-family: 'Courier New', Courier, monospace;
+            /* Transition ultra-rapide pour garder un micro-effet visuel sans latence */
+            transition: transform 0.05s ease-out; 
+        }
+
+        .btn-validate {
+            background: transparent;
+            border: 2px solid var(--accent);
+            color: var(--accent);
+            padding: 12px 40px;
+            font-size: 1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn-validate:hover { background: var(--accent); color: #020617; box-shadow: 0 0 15px rgba(0, 212, 255, 0.4); }
+
+        .msg-box {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 6px;
+            max-width: 500px;
+            width: 100%;
+            display: none;
+            font-weight: bold;
+            line-height: 1.5;
+            box-sizing: border-box;
+        }
+
+        .msg-error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid var(--error);
+            color: #fca5a5;
+            animation: shake 0.4s ease-in-out;
+        }
+
+        .msg-success {
+            background: rgba(16, 185, 129, 0.1);
+            border: 2px solid var(--success);
+            color: #6ee7b7;
+            animation: successPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-6px); }
+            75% { transform: translateX(6px); }
+        }
+
+        @keyframes successPop {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+
+    <a href="index.html" class="home-btn" title="Retour à l'accueil">
+        <i class="fas fa-home"></i>
+    </a>
+
+    <header>Analyse d'Élément - Mallette de Voyage Égarée</header>
+
+    <div class="container">
+        
+        <div class="image-wrapper">
+            <img src="assets/valise.png" class="suitcase-img" alt="Valise de Juliet">
+        </div>
+
+        <div class="clue-label">Entrez le code de la valise</div>
+
+        <div class="lock-container" id="lock-interface"></div>
+
+        <button class="btn-validate" id="val-btn" onclick="checkCode()">VALIDER</button>
+
+        <div id="error-msg" class="msg-box msg-error">
+            <i class="fas fa-lock"></i>&nbsp; Code erroné. Le mécanisme à combinaison reste bloqué. Vérifiez vos indices.
+        </div>
+
+        <div id="success-msg" class="msg-box msg-success">
+            <i class="fas fa-unlock-alt" style="font-size: 2rem; margin-bottom: 10px;"></i><br>
+            MÉCANISME DÉVERROUILLÉ<br><br>
+            VOUS POUVEZ MAINTENANT OUVRIR L'ENVELOPPE VALISE DE JULIET
+        </div>
+
+    </div>
+
+    <script>
+        const wheelsData = [
+            ["A", "L", "K", "M", "P", "R", "T", "V", "E", "Z"], 
+            ["O", "B", "E", "G", "H", "I", "N", "S", "U", "Y"], 
+            ["C", "D", "F", "N", "J", "L", "M", "P", "R", "T"], 
+            ["X", "Q", "D", "F", "H", "J", "K", "M", "W", "Z"], 
+            ["A", "E", "I", "O", "U", "B", "C", "F", "G", "H"], 
+            ["N", "P", "Q", "R", "S", "T", "V", "W", "X", "Z"]  
+        ];
+
+        const targetCode = "LONDON";
+        wheelsData.forEach((arr, idx) => {
+            if(!arr.includes(targetCode[idx])) {
+                arr[0] = targetCode[idx];
+            }
+        });
+
+        let currentIndices = [0, 0, 0, 0, 0, 0];
+        let isLocked = true;
+
+        const lockInterface = document.getElementById('lock-interface');
+
+        wheelsData.forEach((letters, i) => {
+            const group = document.createElement('div');
+            group.className = 'wheel-group';
+
+            const btnUp = document.createElement('button');
+            btnUp.className = 'nav-arrow';
+            btnUp.innerHTML = '<i class="fas fa-chevron-up"></i>';
+            btnUp.onclick = () => changeLetter(i, -1);
+
+            const windowDiv = document.createElement('div');
+            windowDiv.className = 'wheel-window';
+
+            const textDiv = document.createElement('div');
+            textDiv.className = 'wheel-text';
+            textDiv.id = `w${i}`;
+            textDiv.innerText = letters[currentIndices[i]];
+
+            const btnDown = document.createElement('button');
+            btnDown.className = 'nav-arrow';
+            btnDown.innerHTML = '<i class="fas fa-chevron-down"></i>';
+            btnDown.onclick = () => changeLetter(i, 1);
+
+            windowDiv.appendChild(textDiv);
+            group.appendChild(btnUp);
+            group.appendChild(windowDiv);
+            group.appendChild(btnDown);
+            lockInterface.appendChild(group);
+        });
+
+        // MODIFIÉ : Changement instantané sans setTimeout
+        function changeLetter(wheelIdx, direction) {
+            if (!isLocked) return;
+
+            const totalLetters = wheelsData[wheelIdx].length;
+            currentIndices[wheelIdx] = (currentIndices[wheelIdx] + direction + totalLetters) % totalLetters;
+            
+            const textEl = document.getElementById(`w${wheelIdx}`);
+            
+            // On met directement à jour la lettre sans attendre
+            textEl.innerText = wheelsData[wheelIdx][currentIndices[wheelIdx]];
+            
+            // Effet d'enfoncement très rapide purement CSS au clic
+            textEl.style.transform = 'scale(0.85)';
+            setTimeout(() => { textEl.style.transform = 'scale(1)'; }, 50);
+        }
+
+        function checkCode() {
+            if (!isLocked) return;
+
+            const errBox = document.getElementById('error-msg');
+            const successBox = document.getElementById('success-msg');
+            const valBtn = document.getElementById('val-btn');
+
+            errBox.style.display = 'none';
+
+            let currentString = "";
+            currentIndices.forEach((valIdx, wheelIdx) => {
+                currentString += wheelsData[wheelIdx][valIdx];
+            });
+
+            if (currentString === targetCode) {
+                isLocked = false;
+                successBox.style.display = 'block';
+                valBtn.style.display = 'none';
+                
+                document.querySelectorAll('.nav-arrow').forEach(btn => {
+                    btn.style.opacity = '0.2';
+                    btn.style.cursor = 'default';
+                    btn.onclick = null;
+                });
+            } else {
+                errBox.style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>
