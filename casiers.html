@@ -245,6 +245,7 @@
         const isSalome = query.includes("salome") && query.includes("riviere");
         const isPaolo = query.includes("paolo") && query.includes("moretti");
         const isThomas = query.includes("thomas") && query.includes("reed");
+        const isEthan = query.includes("ethan") && query.includes("moore");
 
         warning.style.display = 'none';
 
@@ -286,9 +287,22 @@
                         <p><span class="label">Dernière activité :</span> Condamnation Tribunal (2019)</p>
                         <p><span class="label">Motif principal :</span> Escroquerie et usurpation du titre d'avocat</p>
                         <p><span class="label">Plaintes civiles :</span> 12 victimes pour captation d'honoraires illégaux</p>
-                        <p><span class="label">Note de sûreté :</span> Individu très persuasif. S'est fait passer pour un expert juridique sans diplôme. Nota bene : Le sujet ne possède aucun lien avec la filière agricole ou fruitière.</p>
+                        <p><span class="label">Note de sûreté :</span> Individu très persuasif. S'est fait passer pour un expert juridique sans diplôme.</p>
                     </div>
                 </div>`;
+        } 
+        else if (isEthan) {
+        warning.style.display = 'block';
+        resultArea.innerHTML = `
+            <div class="criminal-record">
+                <div class="record-header">DOSSIER CRIMINEL : THOMAS REED</div>
+                <div class="record-body">
+                    <p><span class="label">Date de naissance :</span> 19 mars 1979</p>
+                    <p><span class="label">Dernière activité :</span> Rapport de police (2023)</p>
+                    <p><span class="label">Motif principal :</span> Violation de domicile et recel de documents professionnels (Alpes françaises)</p>
+                    <p><span class="label">Note de sûreté :</span> Individu à la persévérance marquée, manifestant un intérêt prononcé pour la collecte d'informations internes et le recoupement de données privées.</p>
+                </div>
+            </div>`;
         } 
         else {
             resultArea.innerHTML = `
