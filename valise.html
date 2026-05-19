@@ -58,8 +58,8 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            width: 90%;
-            max-width: 800px;
+            width: 95%;
+            max-width: 850px;
             text-align: center;
         }
 
@@ -89,13 +89,13 @@
 
         .lock-container {
             background: linear-gradient(135deg, #334155, #1e293b);
-            padding: 20px 30px;
+            padding: 20px 25px;
             border-radius: 12px;
             border: 4px solid #020617;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5), inset 0 1px 5px rgba(255,255,255,0.2);
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 12px;
             margin-bottom: 30px;
         }
 
@@ -136,7 +136,6 @@
             font-weight: 800;
             color: #fbbf24;
             font-family: 'Courier New', Courier, monospace;
-            /* Transition ultra-rapide pour garder un micro-effet visuel sans latence */
             transition: transform 0.05s ease-out; 
         }
 
@@ -226,23 +225,27 @@
     </div>
 
     <script>
+        // Configuration des 7 molettes contenant les lettres pour "LONDRES" + 9 lettres aléatoires
         const wheelsData = [
-            ["A", "L", "K", "M", "P", "R", "T", "V", "E", "Z"], 
-            ["O", "B", "E", "G", "H", "I", "N", "S", "U", "Y"], 
-            ["C", "D", "F", "N", "J", "L", "M", "P", "R", "T"], 
-            ["X", "Q", "D", "F", "H", "J", "K", "M", "W", "Z"], 
-            ["A", "E", "I", "R", "U", "B", "C", "F", "G", "H"],
-            ["A", "E", "I", "O", "U", "B", "C", "F", "G", "H"], 
-            ["N", "P", "Q", "R", "S", "T", "V", "W", "X", "Z"]  
+            ["A", "L", "K", "M", "P", "R", "T", "V", "E", "Z"], // Contient L
+            ["O", "B", "E", "G", "H", "I", "N", "S", "U", "Y"], // Contient O
+            ["C", "D", "F", "N", "J", "L", "M", "P", "R", "T"], // Contient N
+            ["X", "Q", "D", "F", "H", "J", "K", "M", "W", "Z"], // Contient D
+            ["A", "E", "I", "O", "U", "B", "R", "F", "G", "H"], // Contient R
+            ["Z", "P", "Q", "E", "S", "T", "V", "W", "X", "B"], // Contient E
+            ["M", "S", "J", "L", "N", "P", "R", "T", "V", "A"]  // Contient S
         ];
 
         const targetCode = "LONDRES";
+        
+        // Sécurité d'injection
         wheelsData.forEach((arr, idx) => {
             if(!arr.includes(targetCode[idx])) {
                 arr[0] = targetCode[idx];
             }
         });
 
+        // Initialisation de l'état pour 7 entrées
         let currentIndices = [0, 0, 0, 0, 0, 0, 0];
         let isLocked = true;
 
@@ -277,7 +280,6 @@
             lockInterface.appendChild(group);
         });
 
-        // MODIFIÉ : Changement instantané sans setTimeout
         function changeLetter(wheelIdx, direction) {
             if (!isLocked) return;
 
@@ -285,11 +287,8 @@
             currentIndices[wheelIdx] = (currentIndices[wheelIdx] + direction + totalLetters) % totalLetters;
             
             const textEl = document.getElementById(`w${wheelIdx}`);
-            
-            // On met directement à jour la lettre sans attendre
             textEl.innerText = wheelsData[wheelIdx][currentIndices[wheelIdx]];
             
-            // Effet d'enfoncement très rapide purement CSS au clic
             textEl.style.transform = 'scale(0.85)';
             setTimeout(() => { textEl.style.transform = 'scale(1)'; }, 50);
         }
