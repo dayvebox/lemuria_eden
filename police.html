@@ -192,34 +192,12 @@
     
     let selectedImages = [];
 
-    // --- CHARGEMENT ET VÉRIFICATION DE LA PROGRESSION REVENUE ---
-    window.addEventListener('DOMContentLoaded', () => {
-        const savedStep = localStorage.getItem('spf_police_step');
-        if (savedStep) {
-            const stepNum = parseInt(savedStep);
-            // Si le joueur a déjà avancé, on masque l'étape 1
-            if (stepNum > 1) {
-                document.getElementById('step-1').style.display = 'none';
-                
-                if (stepNum === 2) {
-                    document.getElementById('step-2').style.display = 'block';
-                } else if (stepNum === 3) {
-                    document.getElementById('step-3').style.display = 'block';
-                } else if (stepNum === 4) {
-                    document.getElementById('success-msg').style.display = 'block';
-                }
-            }
-        }
-    });
-
     // --- LOGIQUE ÉTAPE 1 ---
     function goToCaptcha() {
         const input = document.getElementById('caseNumber').value.trim().toUpperCase();
         if (input === CORRECT_CASE) {
             document.getElementById('step-1').style.display = 'none';
             document.getElementById('step-2').style.display = 'block';
-            // Sauvegarde de l'accès à l'étape 2
-            localStorage.setItem('spf_police_step', '2');
         } else {
             alert("Erreur : Dossier introuvable.");
         }
@@ -248,8 +226,6 @@
         if (isCorrect) {
             document.getElementById('step-2').style.display = 'none';
             document.getElementById('step-3').style.display = 'block';
-            // Sauvegarde de l'accès à l'étape 3
-            localStorage.setItem('spf_police_step', '3');
         } else {
             alert("Échec de la validation visuelle.");
             selectedImages = [];
@@ -263,8 +239,6 @@
         if (input === DISTANCE_SOLUTION) {
             document.getElementById('step-3').style.display = 'none';
             document.getElementById('success-msg').style.display = 'block';
-            // Sauvegarde du succès final pour éviter qu'ils soient bloqués s'ils retournent à l'accueil
-            localStorage.setItem('spf_police_step', '4');
         } else {
             alert("Erreur de géolocalisation : distance incorrecte.");
         }
