@@ -247,6 +247,7 @@
         const isThomas = query.includes("thomas") && query.includes("reed");
         const isEthan = query.includes("ethan") && query.includes("moore");
         const isAlexandre = query.includes("alexandre") && query.includes("dubois");
+        const isStephen = query.includes("stephen") && query.includes("bird");
 
         warning.style.display = 'none';
 
@@ -310,6 +311,19 @@
         resultArea.innerHTML = `
             <div class="criminal-record">
                 <div class="record-header">LA RECHERCHE "ALEXANDRE DUBOIS" N'A PAS ABOUTI. AUCUNE CORRESPONDANCE TROUVÉE. PROFIL INEXISTANT.</div>
+            </div>`;
+        } 
+        else if (isStephen) {
+        warning.style.display = 'block';
+        resultArea.innerHTML = `
+            <div class="criminal-record">
+                <div class="record-header">DOSSIER CRIMINEL : STEPHEN BIRD</div>
+                <div class="record-body">
+                    <p><span class="label">Date de naissance :</span> 24 avril 1968</p>
+                    <p><span class="label">Dernière activité :</span> Rapport de police (2023)</p>
+                    <p><span class="label">Motif principal :</span> Personne disparue, activement recherchée pour meurtre dans le cadre de l'affaire de Chicago 2021</p>
+                    <p><span class="label">Note de sûreté :</span> Toute information au sujet de cet homme doit conduire à une ouverture de procédure de niveau prioritaire.</p>
+                </div>
             </div>`;
         } 
         else {
