@@ -117,6 +117,39 @@
         }
         .btn-validate:hover { background: var(--accent-color); color: #000; }
 
+        /* --- NOUVEAU BOUTON CONCLUSION --- */
+        .btn-conclusion {
+            display: none; /* Caché par défaut */
+            width: 100%;
+            padding: 18px;
+            background: var(--accent-color);
+            color: #000;
+            border: none;
+            border-radius: 4px;
+            text-transform: uppercase;
+            font-weight: 900;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 20px;
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.4);
+        }
+        .btn-conclusion:hover { 
+            transform: scale(1.01); 
+            box-shadow: 0 0 25px rgba(0, 212, 255, 0.7); 
+        }
+
+        /* --- ZONE DU TEXTE FINAL --- */
+        .conclusion-text {
+            text-align: left;
+            line-height: 1.8;
+            color: var(--text-primary);
+            font-size: 1.05rem;
+        }
+        .conclusion-text p {
+            margin-bottom: 20px;
+        }
+
         #result-msg {
             margin-top: 30px;
             padding: 20px;
@@ -139,102 +172,229 @@
 </header>
 
 <div class="container">
-    <h1>Conclusion de l'enquête</h1>
+    
+    <div id="quiz-screen">
+        <h1>Conclusion de l'enquête</h1>
 
-    <div class="question-block">
-        <label>1. Qui est la victime de l'incendie, retrouvée dans le sauna ?</label>
-        <select id="q1">
-            <option value="">-- Sélectionnez l'identité --</option>
-            <option value="marla">Marla Solis</option>
-            <option value="juliet">Juliet Solis</option>
-            <option value="alexandre">Alexandre Dubois</option>
-            <option value="salome">Salomé Rivière</option>
-            <option value="ethan">Ethan Moore</option>
-            <option value="mirella">Mirella Payet</option>
-            <option value="paolo">Paolo Moretti</option>
-            <option value="anselme">Anselme Razafy</option>
-            <option value="thomas">Thomas Reed</option>
-            <option value="dustin">Dustin Hale</option>
-            <option value="naomi">Naomi Ridley</option>
-            <option value="elias">Elias Kovacs</option>
-        </select>
+        <div class="question-block">
+            <label>1. Qui est la victime de l'incendie, retrouvée dans le sauna ?</label>
+            <select id="q1">
+                <option value="">-- Sélectionnez l'identité --</option>
+                <option value="marla">Marla Solis</option>
+                <option value="juliet">Juliet Solis</option>
+                <option value="alexandre">Alexandre Dubois</option>
+                <option value="salome">Salomé Rivière</option>
+                <option value="ethan">Ethan Moore</option>
+                <option value="mirella">Mirella Payet</option>
+                <option value="paolo">Paolo Moretti</option>
+                <option value="anselme">Anselme Razafy</option>
+                <option value="thomas">Thomas Reed</option>
+                <option value="dustin">Dustin Hale</option>
+                <option value="naomi">Naomi Ridley</option>
+                <option value="elias">Elias Kovacs</option>
+            </select>
+        </div>
+
+        <div class="question-block">
+            <label>2. Quel était le secret de la victime et qui l’a révélé ?</label>
+            <select id="q2">
+                <option value="">-- Sélectionnez le mobile --</option>
+                <option value="1">Détournement de fonds caritatifs, révélé par Marla</option>
+                <option value="2">Dénonciation des conditions de travail, révélé par Paolo</option>
+                <option value="3">Espionnage pour un resort concurrent, révélé par Anselme</option>
+                <option value="4">Travail dissimulé, révélé par Dustin</option>
+                <option value="5">Chantage sur le passé de Salomé, révélé par Ethan</option>
+                <option value="6">Blanchiment d'argent via l'héliport, révélé par Elias</option>
+                <option value="7">Liaison secrète compromettante, révélé par Mirella</option>
+                <option value="correct">Journaliste infiltré, révélé par Juliet</option>
+                <option value="9">Vol de diamants de la villa Laplaz, révélé par Thomas</option>
+                <option value="10">Identité du père de Juliet, révélé par Marla</option>
+                <option value="11">Ancien complice d'arnaque de Thomas, révélé par Alexandre</option>
+                <option value="12">Lien avec le crime organized, révélé par Anselme</option>
+                <option value="13">Fraude à l'assurance, révélé par Paolo</option>
+                <option value="14">Vol de manuscrit, révélé par Naomi</option>
+                <option value="15">Propriétaire légitime de l'atoll, révélé par Ethan</option>
+                <option value="16">Agent double pour la police locale, révélé par Mirella</option>
+            </select>
+        </div>
+
+        <div class="question-block">
+            <label>3. S'il s'agit d'un meurtre, qui est le coupable ?</label>
+            <select id="q3">
+                <option value="">-- Sélectionnez le coupable --</option>
+                <option value="marla">Marla Solis</option>
+                <option value="juliet">Juliet Solis</option>
+                <option value="alexandre">Alexandre Dubois</option>
+                <option value="salome">Salomé Rivière</option>
+                <option value="ethan">Ethan Moore</option>
+                <option value="mirella">Mirella Payet</option>
+                <option value="paolo">Paolo Moretti</option>
+                <option value="anselme">Anselme Razafy</option>
+                <option value="thomas">Thomas Reed</option>
+                <option value="dustin">Dustin Hale</option>
+                <option value="naomi">Naomi Ridley</option>
+                <option value="elias">Elias Kovacs</option>
+            </select>
+        </div>
+
+        <button class="btn-validate" id="btn-submit" onclick="validateCase()">Envoyer les conclusions</button>
+        
+        <div id="result-msg"></div>
+
+        <button id="btn-conclusion" class="btn-conclusion" onclick="displayConclusionText()">
+            <i class="fas fa-book-open"></i>&nbsp; Lire la conclusion de l'enquête
+        </button>
     </div>
 
-    <div class="question-block">
-        <label>2. Quel était le secret de la victime et qui l’a révélé ?</label>
-        <select id="q2">
-            <option value="">-- Sélectionnez le mobile --</option>
-            <option value="1">Détournement de fonds caritatifs, révélé par Marla</option>
-            <option value="2">Dénonciation des conditions de travail, révélé par Paolo</option>
-            <option value="3">Espionnage pour un resort concurrent, révélé par Anselme</option>
-            <option value="4">Travail dissimulé, révélé par Dustin</option>
-            <option value="5">Chantage sur le passé de Salomé, révélé par Ethan</option>
-            <option value="6">Blanchiment d'argent via l'héliport, révélé par Elias</option>
-            <option value="7">Liaison secrète compromettante, révélé par Mirella</option>
-            <option value="correct">Journaliste infiltré, révélé par Juliet</option>
-            <option value="9">Vol de diamants de la villa Laplaz, révélé par Thomas</option>
-            <option value="10">Identité du père de Juliet, révélé par Marla</option>
-            <option value="11">Ancien complice d'arnaque de Thomas, révélé par Alexandre</option>
-            <option value="12">Lien avec le crime organisé, révélé par Anselme</option>
-            <option value="13">Fraude à l'assurance, révélé par Paolo</option>
-            <option value="14">Vol de manuscrit, révélé par Naomi</option>
-            <option value="15">Propriétaire légitime de l'atoll, révélé par Ethan</option>
-            <option value="16">Agent double pour la police locale, révélé par Mirella</option>
-        </select>
+    <div id="conclusion-screen" style="display: none;">
+        <h1>Rapport de Clôture</h1>
+        <div class="conclusion-text">
+            <p><strong>Dossier Clos — Agence 55 Investigations</strong></p>
+            <p>1. Qui est la victime retrouvée dans le sauna ?
+
+La victime retrouvée brûlée dans le sauna est Ethan Moore.
+
+L'helicoptére qui a quitté l'ile ( Bleu) ne pouvait contenir que  6 passagers, hors il y avait 7 clients sur l'Ile, l'un d'eux a donc disparu.
+
+Pour l’identifier, il fallait remonter la piste du chat blessé retrouvé avec les pattes brûlées : Regulus. Les traces de griffures présentes autour de la scène indiquaient qu’un chat avait assisté à l’incendie.
+
+Grâce :
+
+à la liste des chats thérapeutiques,
+aux demandes particulières des résidents,
+aux allergies,
+aux notes du personnel,
+et au carnet de Juliet,
+
+il était possible de reconstituer l’attribution des chats.
+Une photo montre Bubule sur un livre de Naomie
+Marla voulait un chat silencieux : Polaris 
+Dustin, décrit comme “le sceptique”, reçoit le chat Antares comme mentionné dans le carnet de liaison.
+Thomas refuse totalement les chats à cause de l’allergie d’Elias qui lui se retrouve avec Castor
+Et Juliet évoque son “matou d’amour” dans son carnet avec Une perle, il s'agit donc de Spica.
+Bellatrix etant malheureusement décédé et Mizar laissé au repos,par élimination, le chat blessé Regulus appartenait donc à Ethan Moore.
+
+La victime du sauna est donc Ethan Moore.</p>
+            <p>2. Quel était le secret de la victime et qui l’a révélé ?
+
+Le véritable secret d’Ethan Moore était qu’il n’était pas réellement un conseiller financier.
+
+Ethan était en réalité un journaliste infiltré, créateur du podcast indépendant Cold Case Fever. Sa couverture récente crée via le blog du Chicago Tribune ( qui sponsorise son podcast) ainsi que son profil Linkin ont été mis en ligne le 20 septembre 2026. De plus son casiedr judiciaire coincide avec les précédents épisodes de Cold Case Fever.
+Dans cette nouvelle saison de son podcast, Ethan enquêtait sur la disparition d’un homme nommé Stephen Bird, suspect impliqué dans une affaire de meurtre remontant à 2021 à Chicago.
+
+Ethan s’était rendu au Lémuria Eden sous une fausse identité afin d’enquêter discrètement sur cette affaire.
+
+La personne qui révèle son secret est Juliet. En grande fan du podcast Cold Case Fever, Juliet reconnaît la voix d’Ethan. Elle comprend alors qu’il est journaliste infiltré.
+
+Sachant qu'il n'a pas le droit d'être présent sur l'ile, et en applicant le réglement, Juliet décide de révéler son identité durant la soirée dans l’abri anti-tempête.
+
+Dans son carnet, elle écrit :
+
+“Cold Case Fever. C’est ça son secret ?”
+
+Puis :
+
+“Il n'a pas le droit d'être là, c'est interdit, je vais tout dire!”
+</p>
+            <p>3. S’il s’agit d’un meurtre, qui est le coupable ?
+
+Le coupable est Alexandre Dubois, le directeur du Lémuria Eden.
+
+Mais Alexandre Dubois n’est pas sa véritable identité. Alexandre Dubois est en réalité… Stephen Bird.
+
+Plusieurs éléments permettent de le comprendre :
+
+Alexandre vit sur l’île depuis exactement cinq ans,
+aucune trace de lui n’existe dans les bases officielles, son identité est introuvable,
+et Ethan enquêtait précisément sur Stephen Bird depuis plusieurs années, il sait qu'il se trouve sur l'île.
+
+Durant la soirée dans l’abri anti-tempête, Juliet révèle involontairement à Alexandre qu’Ethan est journaliste.En retraçant les rôles du jeu Vampire des Seychelles, on découvre que Juliet parlait au “Fantôme”… et que le Fantôme était Alexandre.
+
+Alexandre comprend alors immédiatement qu’Ethan est venu sur l’île pour enquêter sur lui. Un autre indice crucial apparaît dans l’historique informatique : Alexandre quitte discrètement l’abri pendant la nuit pour utiliser le PC de la réception et faire des recherches sur Cold Case Fever.
+
+À partir de ce moment, il comprend que son passé est sur le point d’être révélé.
+
+Après la levée de l’alerte météo, Ethan retourne vers sa villa. Alexandre le suit discrètement sur le chemin longeant les villas.
+
+Le plan de l’île permet de comprendre qu’Alexandre est le seul à pouvoir :
+
+-suivre Ethan sans être vu,
+-éviter la ronde d’Anselme,
+-puis déplacer le corps jusqu’au sauna.
+
+Pendant ce temps :
+
+Marla et Juliet partent vers l’autre côté de l’île,
+Naomi et Dustin retournent directement à leur villa,
+Thomas, Elias, Mirella et Salomé discutent ensemble devant le dortoir.
+
+Tous disposent donc d’alibis cohérents.
+
+Alexandre assassine Ethan puis place son corps dans le sauna afin de brûler le cadavre et faire disparaître les preuves.
+
+Le Lémuria Eden était la cachette parfaite de Stephen Bird.
+
+Et Ethan Moore était sur le point de révéler la vérité.</p>
+            </div>
     </div>
 
-    <div class="question-block">
-        <label>3. S'il s'agit d'un meurtre, qui est le coupable ?</label>
-        <select id="q3">
-            <option value="">-- Sélectionnez le coupable --</option>
-            <option value="marla">Marla Solis</option>
-            <option value="juliet">Juliet Solis</option>
-            <option value="alexandre">Alexandre Dubois</option>
-            <option value="salome">Salomé Rivière</option>
-            <option value="ethan">Ethan Moore</option>
-            <option value="mirella">Mirella Payet</option>
-            <option value="paolo">Paolo Moretti</option>
-            <option value="anselme">Anselme Razafy</option>
-            <option value="thomas">Thomas Reed</option>
-            <option value="dustin">Dustin Hale</option>
-            <option value="naomi">Naomi Ridley</option>
-            <option value="elias">Elias Kovacs</option>
-        </select>
-    </div>
-
-    <button class="btn-validate" onclick="validateCase()">Envoyer les conclusions</button>
-
-    <div id="result-msg"></div>
 </div>
 
 <script>
+    const CORRECT_CASE = "3X594F";
+    
+    // --- VÉRIFICATION DE LA PROGRESSION AU CHARGEMENT ---
+    window.addEventListener('DOMContentLoaded', () => {
+        // Si la conclusion a déjà été débloquée et consultée auparavant
+        if (localStorage.getItem('caseSolved') === 'true' && localStorage.getItem('conclusionRead') === 'true') {
+            displayConclusionText();
+        } 
+        // Si l'énigme est réussie mais qu'ils n'avaient pas encore cliqué sur le bouton
+        else if (localStorage.getItem('caseSolved') === 'true') {
+            showSuccessState();
+        }
+    });
+
     function validateCase() {
         const q1 = document.getElementById('q1').value;
         const q2 = document.getElementById('q2').value;
         const q3 = document.getElementById('q3').value;
         const result = document.getElementById('result-msg');
 
-        // Réinitialisation de l'affichage
         result.style.display = 'none';
         result.className = '';
 
-        // Définition des bonnes réponses
         const isVictimCorrect = (q1 === "ethan");
         const isSecretCorrect = (q2 === "correct");
         const isCulpritCorrect = (q3 === "alexandre");
 
         if (isVictimCorrect && isSecretCorrect && isCulpritCorrect) {
-            // --- ACTION CRUCIALE : On enregistre la réussite dans le navigateur ---
             localStorage.setItem('caseSolved', 'true');
-
-            result.innerHTML = '<i class="fas fa-trophy"></i> Bravo, vous avez résolu l\'enquête du Lémuria Eden. La police procède à l\'arrestation du coupable.';
-            result.classList.add('msg-success');
-            result.style.display = 'block';
+            showSuccessState();
         } else {
             result.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Les preuves ne concordent pas. Vos conclusions sont rejetées. Veuillez réessayer.';
             result.classList.add('msg-error');
             result.style.display = 'block';
         }
+    }
+
+    // Affiche l'état de réussite avec le bouton de transition
+    function showSuccessState() {
+        const result = document.getElementById('result-msg');
+        result.innerHTML = '<i class="fas fa-trophy"></i> Bravo, vous avez résolu l\'enquête du Lémuria Eden. La police procède à l\'arrestation du coupable.';
+        result.classList.add('msg-success');
+        result.style.display = 'block';
+        
+        // Cache le bouton envoyer d'origine et affiche le bouton de lecture finale
+        document.getElementById('btn-submit').style.display = 'none';
+        document.getElementById('btn-conclusion').style.display = 'block';
+    }
+
+    // Bascule complètement l'affichage vers le long texte de conclusion
+    function displayConclusionText() {
+        localStorage.setItem('conclusionRead', 'true');
+        document.getElementById('quiz-screen').style.display = 'none';
+        document.getElementById('conclusion-screen').style.display = 'block';
     }
 </script>
 
