@@ -246,6 +246,7 @@
         const isPaolo = query.includes("paolo") && query.includes("moretti");
         const isThomas = query.includes("thomas") && query.includes("reed");
         const isEthan = query.includes("ethan") && query.includes("moore");
+        const isAlexandre = query.includes("alexandre") && query.includes("dubois");
 
         warning.style.display = 'none';
 
@@ -304,10 +305,17 @@
                 </div>
             </div>`;
         } 
+        else if (isAlexandre) {
+        warning.style.display = 'block';
+        resultArea.innerHTML = `
+            <div class="criminal-record">
+                <div class="record-header">LA RECHERCHE "ALEXANDRE DUBOIS" N'A PAS ABOUTI. AUCUNE CORRESPONDANCE TROUVÉE. PROFIL INEXISTANT.</div>
+            </div>`;
+        } 
         else {
             resultArea.innerHTML = `
                 <div class="no-result">
-                    <i class="fas fa-search-minus"></i> Aucun casier trouvé pour ce nom dans la base de données INTERPOL.
+                    <i class="fas fa-search-minus"></i> Profil existant dans la base de donnée, mais aucune entrée n'a été ajoutée au casier judiciaire de cette personne.
                 </div>`;
         }
     }
